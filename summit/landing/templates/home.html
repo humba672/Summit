@@ -909,32 +909,34 @@
             }
             
             // Event listeners
-            prevBtn.addEventListener('click', prevSlide);
-            nextBtn.addEventListener('click', nextSlide);
-            
+            prevBtn?.addEventListener('click', prevSlide);
+            nextBtn?.addEventListener('click', nextSlide);
+
             // Create Set button
-            createSetBtn.addEventListener('click', function() {
-                alert("Create New Set functionality would open here");
-            });
-            
+            if (createSetBtn) {
+                createSetBtn.addEventListener('click', function() {
+                    alert("Create New Set functionality would open here");
+                });
+            }
+
             // Import Quizlet button
-            importQuizletBtn.addEventListener('click', function() {
+            importQuizletBtn?.addEventListener('click', function() {
                 importModal.style.display = 'flex';
             });
             
             // Close modal
-            closeModal.addEventListener('click', function() {
+            closeModal?.addEventListener('click', function() {
                 importModal.style.display = 'none';
                 resetForm();
             });
-            
-            cancelImport.addEventListener('click', function() {
+
+            cancelImport?.addEventListener('click', function() {
                 importModal.style.display = 'none';
                 resetForm();
             });
             
             // Form submission
-            importForm.addEventListener('submit', function(e) {
+            importForm?.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 const setName = document.getElementById('set-name').value;
