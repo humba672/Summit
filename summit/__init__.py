@@ -28,7 +28,9 @@ def create_app(config_object: object | None = None) -> Flask:
 
 	from .landing.landing import landing_bp	
 	from .auth.auth import auth_bp
+	from .flashcards.flashcards import flashcards_bp
 
+	app.register_blueprint(flashcards_bp)
 	app.register_blueprint(auth_bp)
 	app.register_blueprint(landing_bp)
 
