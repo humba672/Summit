@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Summit | Sign In</title>
+  <title>Summit | Start Your Ascent</title>
   <style>
     :root {
       --midnight: #0C1167;
@@ -113,7 +113,7 @@
 
     h1 {
       margin: 0;
-      font-size: clamp(2.1rem, 4vw, 3.2rem);
+      font-size: clamp(2.1rem, 4vw, 3.1rem);
       color: var(--midnight);
       line-height: 1.1;
     }
@@ -236,18 +236,6 @@
       color: rgba(12, 17, 103, 0.65);
     }
 
-    .credit {
-      font-size: 0.75rem;
-      color: rgba(12, 17, 103, 0.6);
-      text-align: center;
-    }
-
-    .credit a {
-      color: var(--midnight);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
     @media (max-width: 720px) {
       main {
         padding-top: clamp(2rem, 12vw, 3rem);
@@ -280,7 +268,7 @@
     <a class="logo" href="{{ url_for('auth.sign_in') }}">Summit</a>
     <nav class="nav-links">
       <a class="nav-link" href="{{ url_for('landing.index') }}">Home</a>
-      <a class="nav-link" href="{{ url_for('auth.sign_up') }}">Start your ascent</a>
+      <a class="nav-link" href="{{ url_for('auth.sign_in') }}">Sign in</a>
       <a class="nav-link" href="{{ url_for('landing.about') }}">About</a>
     </nav>
   </header>
@@ -291,8 +279,8 @@
     </section>
 
     <section class="content">
-      <h1>The focused, fun way to reach your learning summit.</h1>
-      <p>Build your spaced-repetition streak with handcrafted decks and crisp daily climbs. Summit keeps every ascent engaging so you lock in memories that last.</p>
+      <h1>Create your Summit account.</h1>
+      <p>Drop your details so you can log in with them later. Prefer a fast track? You can always sign in with hackphs / hackphs.</p>
 
       <div class="flash-messages">
         {% with messages = get_flashed_messages(with_categories=True) %}
@@ -304,7 +292,20 @@
         {% endwith %}
       </div>
 
-      <form class="auth-form" method="post" action="{{ url_for('auth.sign_in') }}">
+      <form class="auth-form" method="post" action="{{ url_for('auth.sign_up') }}">
+        <div class="input-group">
+          <label for="name">Name</label>
+          <input
+            class="text-field"
+            id="name"
+            name="name"
+            type="text"
+            placeholder="Summit climber"
+            value="{{ request.form.get('name', '') }}"
+            autocomplete="name"
+            required
+          />
+        </div>
         <div class="input-group">
           <label for="email">Email</label>
           <input
@@ -312,7 +313,7 @@
             id="email"
             name="email"
             type="text"
-            placeholder="Email or demo: hackphs"
+            placeholder="you@example.com"
             value="{{ request.form.get('email', '') }}"
             autocomplete="username"
             required
@@ -325,22 +326,18 @@
             id="password"
             name="password"
             type="password"
-            placeholder="Password"
-            autocomplete="current-password"
+            placeholder="Create a password"
+            autocomplete="new-password"
             required
           />
         </div>
         <div class="actions">
-          <button class="btn btn-primary" type="submit">Sign in</button>
-          <a class="btn btn-secondary" href="{{ url_for('auth.sign_up') }}">Start your ascent</a>
+          <button class="btn btn-primary" type="submit">Save &amp; continue</button>
+          <a class="btn btn-secondary" href="{{ url_for('auth.sign_in') }}">Back to sign in</a>
         </div>
       </form>
 
-      <p class="form-footnote">Need a quick demo? Use <strong>hackphs</strong> for both email and password.</p>
-
-      <div class="credit">
-        Mountain model courtesy of the creator on Sketchfab.
-      </div>
+      <p class="form-footnote">We keep things lightweight—details stay in your browser session so you can try the flow quickly.</p>
     </section>
   </main>
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Summit | Into the Mountains</title>
+    <title>Summit | Home</title>
     <style>
         :root {
             --midnight: #0C1167;
@@ -189,11 +189,11 @@
         <nav>
             <ul class="nav-list">
                 <li class="nav-item"><a href="{{ url_for('landing.index') }}">Home</a></li>
-                <li class="nav-item"><a href="{{ url_for('landing.index') }}">Summit</a></li>
+                <li class="nav-item"><a href="#">Summit</a></li>
                 <li class="nav-item"><a href="#">Profile</a></li>
                 <li class="nav-item"><a href="#">Friends</a></li>
-                <li class="nav-item"><a href="{{ url_for('landing.sign_in') }}">Sign In</a></li>
-                <li class="nav-item"><a href="#">About</a></li>
+                <li class="nav-item"><a href="{{ url_for('auth.sign_in') }}">Sign In</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.about') }}">About</a></li>
             </ul>
         </nav>
     </aside>
@@ -201,7 +201,7 @@
         <section class="hero">
             <h1>Into the mountains, one deck at a time.</h1>
             <p>Summit turns your study climb into a paced ascent. Light sessions, smart spacing, and a clear view of where the next switchback takes you.</p>
-            <a class="cta" href="{{ url_for('auth.sign_in') }}">Start the climb</a>
+            <a class="cta" href="{{ url_for('auth.sign_up') }}">Start your ascent</a>
             <footer>
                 © <span id="year"></span> Summit
             </footer>
