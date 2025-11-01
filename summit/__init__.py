@@ -1,4 +1,8 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+
+db = SQLAlchemy()
 
 
 def create_app(config_object: object | None = None) -> Flask:
@@ -6,9 +10,11 @@ def create_app(config_object: object | None = None) -> Flask:
 
 	# Default config
 	app.config.from_mapping(
-		SECRET_KEY="dev",
-		JSON_SORT_KEYS=False,
-	)
+        SECRET_KEY="askdfaksdfjkhafdfshdh",
+        SQLALCHEMY_DATABASE_URI="sqlite:///db.sqlite",
+    )
+
+	db.init_app(app)
 
 	# Register blueprints (lazy import to avoid circular imports)
 	try:
