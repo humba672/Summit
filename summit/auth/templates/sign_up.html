@@ -331,13 +331,23 @@
             required
           />
         </div>
+        <div class="input-group">
+          <label for="confirm_password">Confirm Password</label>
+          <input
+            class="text-field"
+            id="confirm_password"
+            name="confirm_password"
+            type="password"
+            placeholder="Re-enter your password"
+            autocomplete="new-password"
+            required
+          />
+        </div>
         <div class="actions">
           <button class="btn btn-primary" type="submit">Save &amp; continue</button>
           <a class="btn btn-secondary" href="{{ url_for('auth.sign_in') }}">Back to sign in</a>
         </div>
       </form>
-
-      <p class="form-footnote">We keep things lightweight—details stay in your browser session so you can try the flow quickly.</p>
     </section>
   </main>
 
