@@ -8,6 +8,8 @@ def index():
 
 @landing_bp.route("/about")
 def about():
-    return render_template("about.html")@landing_bp.route("/sign-in")
+    return render_template("about.html")
+
+@landing_bp.route("/sign-in")
 def sign_in():
     return render_template("sign_in.html")
