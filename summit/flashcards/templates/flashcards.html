@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit Flashcards | Into the Mountains</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --midnight: #0C1167;
+            --mist: #ACADBC;
+            --lavender: #9B8ECE;
+            --slate: #50514F;
+            --nav-bg: rgba(12, 17, 103, 0.82);
+            --nav-hover: rgba(155, 142, 206, 0.35);
+            --card-bg: rgba(12, 17, 103, 0.55);
+            --card-border: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
+            color: var(--mist);
+            background: linear-gradient(135deg, var(--midnight) 0%, var(--lavender) 55%, var(--slate) 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: clamp(12rem, 18vw, 15rem);
+            background: var(--nav-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            gap: 2rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.18rem;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 0.9rem;
+            color: rgba(242, 244, 252, 0.9);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.05rem;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .nav-item a::before {
+            content: "";
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 0.25rem;
+            background: rgba(172, 173, 188, 0.45);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .nav-item a:hover {
+            background: var(--nav-hover);
+            transform: translateX(3px);
+        }
+
+        .nav-item a:hover::before {
+            background: #fff;
+            transform: scale(1.2);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: clamp(2rem, 5vw, 4rem);
+            gap: 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 5vw, 3rem);
+            line-height: 1.05;
+            color: #fff;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(229, 231, 242, 0.8);
+            margin-top: 0.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .flashcard-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .flashcard {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1500px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            border-radius: 1.75rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 24px 48px rgba(12, 17, 103, 0.35);
+        }
+
+        .flashcard-front {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+        }
+
+        .flashcard-back {
+            background: rgba(155, 142, 206, 0.55);
+            border: 1px solid var(--card-border);
+            transform: rotateY(180deg);
+        }
+
+        .card-content {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .card-hint {
+            font-size: 1rem;
+            color: rgba(229, 231, 242, 0.7);
+            margin-top: 1.5rem;
+        }
+
+        .card-counter {
+            font-size: 1rem;
+            color: rgba(229, 231, 242, 0.7);
+            margin-top: 1rem;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 700px;
+            margin-top: 1rem;
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1.7rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--midnight);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .difficulty-btn {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            border-radius: 0.9rem;
+        }
+
+        .wrong {
+            background: rgba(255, 107, 107, 0.9);
+            color: white;
+        }
+
+        .hard {
+            background: rgba(255, 159, 67, 0.9);
+            color: white;
+        }
+
+        .medium {
+            background: rgba(255, 206, 86, 0.9);
+            color: var(--midnight);
+        }
+
+        .easy {
+            background: rgba(72, 207, 173, 0.9);
+            color: white;
+        }
+
+        .progress-container {
+            margin-top: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: rgba(229, 231, 242, 0.9);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #9B8ECE, #ACADBC);
+            width: 65%;
+            border-radius: 4px;
+        }
+
+        .set-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .set-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .set-details h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.25rem;
+        }
+
+        .set-details p {
+            font-size: 0.9rem;
+            color: rgba(229, 231, 242, 0.7);
+        }
+
+        /* Import Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(12, 17, 103, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.75rem;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 700px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 24px 48px rgba(12, 17, 103, 0.35);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: #fff;
+            font-size: 1.8rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: rgba(229, 231, 242, 0.7);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.9rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--lavender);
+        }
+
+        .form-control::placeholder {
+            color: rgba(229, 231, 242, 0.5);
+        }
+
+        textarea.form-control {
+            min-height: 200px;
+            resize: vertical;
+            font-family: monospace;
+        }
+
+        .format-example {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.7rem;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: rgba(229, 231, 242, 0.7);
+        }
+
+        .format-example code {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.3rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: rgba(225, 227, 236, 0.7);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+
+            .nav-list {
+                display: flex;
+                gap: 0.75rem;
+            }
+
+            .nav-item a {
+                padding: 0.65rem 0.9rem;
+            }
+
+            main {
+                padding: clamp(2rem, 8vw, 4rem);
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: row;
+                justify-content: flex-end;
+            }
+
+            .difficulty-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <a class="brand" href="#">Summit</a>
+        <nav>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a href="#"><i class="fas fa-layer-group"></i> Flashcards</a></li>
+                <li class="nav-item"><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                <li class="nav-item"><a href="#"><i class="fas fa-users"></i> Friends</a></li>
+                <li class="nav-item"><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
+            </ul>
+        </nav>
+    </aside>
+    
+    <main>
+        <div class="header">
+            <div>
+                <h1>Computer Science Terms</h1>
+                <p class="subtitle">Master key concepts with spaced repetition</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn" id="import-btn">
+                    <i class="fas fa-file-import"></i> Import Flashcards
+                </button>
+                <button class="btn" id="new-set-btn">
+                    <i class="fas fa-plus"></i> New Set
+                </button>
+            </div>
+        </div>
+        
+        <div class="set-info">
+            <div class="set-icon">
+                <i class="fas fa-laptop-code"></i>
+            </div>
+            <div class="set-details">
+                <h3>Computer Science Fundamentals</h3>
+                <p>42 cards • 65% mastered</p>
+            </div>
+        </div>
+        
+        <div class="flashcard-container">
+            <div class="flashcard" id="flashcard">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <div class="card-content">What is Spaced Repetition?</div>
+                        <div class="card-hint">Click to flip the card</div>
+                        <div class="card-counter">Card 13 of 42</div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div class="card-content">A learning technique that increases intervals of time between subsequent review of previously learned material</div>
+                        <div class="card-hint">Click to flip back</div>
+                        <div class="card-counter">Card 13 of 42</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="difficulty-buttons">
+                <button class="btn difficulty-btn wrong" id="wrong-btn">
+                    <i class="fas fa-times"></i> Wrong
+                </button>
+                <button class="btn difficulty-btn hard" id="hard-btn">
+                    <i class="fas fa-hard-hat"></i> Hard
+                </button>
+                <button class="btn difficulty-btn medium" id="medium-btn">
+                    <i class="fas fa-balance-scale"></i> Medium
+                </button>
+                <button class="btn difficulty-btn easy" id="easy-btn">
+                    <i class="fas fa-feather"></i> Easy
+                </button>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="btn" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Flip Card
+                </button>
+                <button class="btn btn-secondary" id="next-btn">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-text">
+                    <span>Mastery Progress</span>
+                    <span>27/42 cards (65%)</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            © <span id="year"></span> Summit - Into the Mountains, one card at a time
+        </footer>
+    </main>
+
+    <!-- Import Modal -->
+    <div class="modal" id="import-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Import Flashcards</h2>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="set-name">Set Name</label>
+                <input type="text" id="set-name" class="form-control" placeholder="Enter a name for your flashcard set">
+            </div>
+            
+            <div class="form-group">
+                <label for="flashcard-text">Flashcard Text</label>
+                <textarea id="flashcard-text" class="form-control" placeholder="Enter your flashcards in the format: front text | back text (one per line)"></textarea>
+                <div class="format-example">
+                    <p><strong>Format:</strong> One flashcard per line, with front and back separated by " | "</p>
+                    <p><strong>Example:</strong></p>
+                    <code>Spaced Repetition | A learning technique that increases intervals between reviews</code><br>
+                    <code>Algorithm | A step-by-step procedure for solving a problem</code><br>
+                    <code>API | Application Programming Interface</code>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancel-import">Cancel</button>
+                <button class="btn" id="import-text">Import Flashcards</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashcard = document.getElementById('flashcard');
+            const flipBtn = document.getElementById('flip-btn');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const wrongBtn = document.getElementById('wrong-btn');
+            const hardBtn = document.getElementById('hard-btn');
+            const mediumBtn = document.getElementById('medium-btn');
+            const easyBtn = document.getElementById('easy-btn');
+            const importBtn = document.getElementById('import-btn');
+            const newSetBtn = document.getElementById('new-set-btn');
+            const importModal = document.getElementById('import-modal');
+            const closeModal = document.getElementById('close-modal');
+            const cancelImport = document.getElementById('cancel-import');
+            const importText = document.getElementById('import-text');
+            
+            // Initialize flashcards array
+            let flashcards = [
+                { front: "What is Spaced Repetition?", back: "A learning technique that increases intervals of time between subsequent review of previously learned material" },
+                { front: "What is an Algorithm?", back: "A step-by-step procedure for solving a problem or accomplishing a task" },
+                { front: "What is an API?", back: "Application Programming Interface - a set of rules that allows programs to communicate with each other" }
+            ];
+            
+            let currentCardIndex = 0;
+            let totalCards = flashcards.length;
+            
+            // Initialize the flashcard display
+            function updateFlashcardDisplay() {
+                if (flashcards.length === 0) return;
+                
+                const frontContent = document.querySelector('.flashcard-front .card-content');
+                const backContent = document.querySelector('.flashcard-back .card-content');
+                const cardCounter = document.querySelector('.card-counter');
+                
+                frontContent.textContent = flashcards[currentCardIndex].front;
+                backContent.textContent = flashcards[currentCardIndex].back;
+                cardCounter.textContent = `Card ${currentCardIndex + 1} of ${totalCards}`;
+                
+                // Update progress
+                const progressFill = document.querySelector('.progress-fill');
+                const progressPercent = ((currentCardIndex + 1) / totalCards) * 100;
+                progressFill.style.width = `${progressPercent}%`;
+                
+                // Reset card to front when changing cards
+                flashcard.classList.remove('flipped');
+            }
+            
+            // Flip card functionality
+            flipBtn.addEventListener('click', function() {
+                flashcard.classList.toggle('flipped');
+            });
+            
+            flashcard.addEventListener('click', function() {
+                flashcard.classList.toggle('flipped');
+            });
+            
+            // Navigation between cards
+            prevBtn.addEventListener('click', function() {
+                if (currentCardIndex > 0) {
+                    currentCardIndex--;
+                    updateFlashcardDisplay();
+                }
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                if (currentCardIndex < totalCards - 1) {
+                    currentCardIndex++;
+                    updateFlashcardDisplay();
+                }
+            });
+            
+            // Difficulty buttons
+            wrongBtn.addEventListener('click', function() {
+                updateCardStatus('wrong');
+                nextCard();
+            });
+            
+            hardBtn.addEventListener('click', function() {
+                updateCardStatus('hard');
+                nextCard();
+            });
+            
+            mediumBtn.addEventListener('click', function() {
+                updateCardStatus('medium');
+                nextCard();
+            });
+            
+            easyBtn.addEventListener('click', function() {
+                updateCardStatus('easy');
+                nextCard();
+            });
+            
+            function updateCardStatus(difficulty) {
+                console.log(`Card marked as: ${difficulty}`);
+                
+                // Visual feedback
+                const buttons = [wrongBtn, hardBtn, mediumBtn, easyBtn];
+                buttons.forEach(btn => btn.classList.remove('active'));
+                
+                switch(difficulty) {
+                    case 'wrong':
+                        wrongBtn.classList.add('active');
+                        break;
+                    case 'hard':
+                        hardBtn.classList.add('active');
+                        break;
+                    case 'medium':
+                        mediumBtn.classList.add('active');
+                        break;
+                    case 'easy':
+                        easyBtn.classList.add('active');
+                        break;
+                }
+            }
+            
+            function nextCard() {
+                setTimeout(() => {
+                    if (currentCardIndex < totalCards - 1) {
+                        currentCardIndex++;
+                        updateFlashcardDisplay();
+                    }
+                }, 500);
+            }
+            
+            // New Set button
+            newSetBtn.addEventListener('click', function() {
+                // Reset to empty state
+                flashcards = [];
+                currentCardIndex = 0;
+                totalCards = 0;
+                updateFlashcardDisplay();
+                
+                document.querySelector('.set-details h3').textContent = "New Set";
+                document.querySelector('.set-details p').textContent = "0 cards • 0% mastered";
+                
+                alert("Created a new empty flashcard set. Use the import feature to add cards.");
+            });
+            
+            // Import modal functionality
+            importBtn.addEventListener('click', function() {
+                importModal.style.display = 'flex';
+            });
+            
+            closeModal.addEventListener('click', function() {
+                importModal.style.display = 'none';
+                resetForm();
+            });
+            
+            cancelImport.addEventListener('click', function() {
+                importModal.style.display = 'none';
+                resetForm();
+            });
+            
+            // Import text functionality
+            importText.addEventListener('click', function() {
+                const setName = document.getElementById('set-name').value;
+                const flashcardText = document.getElementById('flashcard-text').value;
+                
+                if (!setName) {
+                    alert('Please enter a name for your flashcard set');
+                    return;
+                }
+                
+                if (!flashcardText) {
+                    alert('Please enter some flashcard text');
+                    return;
+                }
+                
+                // Parse the flashcard text
+                const lines = flashcardText.split('\n');
+                const newCards = [];
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line) {
+                        const parts = line.split('|');
+                        if (parts.length >= 2) {
+                            newCards.push({
+                                front: parts[0].trim(),
+                                back: parts[1].trim()
+                            });
+                        } else {
+                            console.warn(`Skipping invalid line: ${line}`);
+                        }
+                    }
+                }
+                
+                if (newCards.length === 0) {
+                    alert('No valid flashcards found. Please use the format: front text | back text');
+                    return;
+                }
+                
+                // Add new cards to the current set
+                flashcards = [...flashcards, ...newCards];
+                totalCards = flashcards.length;
+                currentCardIndex = 0;
+                
+                // Update the UI
+                document.querySelector('.set-details h3').textContent = setName;
+                document.querySelector('.set-details p').textContent = `${totalCards} cards • 0% mastered`;
+                
+                updateFlashcardDisplay();
+                
+                alert(`Successfully imported ${newCards.length} flashcards for set: "${setName}"`);
+                
+                importModal.style.display = 'none';
+                resetForm();
+            });
+            
+            function resetForm() {
+                document.getElementById('set-name').value = '';
+                document.getElementById('flashcard-text').value = '';
+            }
+            
+            // Set current year in footer
+            document.getElementById("year").textContent = new Date().getFullYear();
+            
+            // Initialize the display
+            updateFlashcardDisplay();
+        });
+    </script>
+</body>
+</html>
