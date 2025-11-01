@@ -1,270 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Summit</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eaeaea;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        
-        .tagline {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            margin-bottom: 20px;
-        }
-        
-        .section {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-        
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #f1f1f1;
-        }
-        
-        p {
-            margin-bottom: 15px;
-        }
-        
-        .highlight {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-left: 4px solid #3498db;
-            margin: 20px 0;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eaeaea;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-        
-        .contact-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 15px;
-        }
-        
-        .contact-item {
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        /* Team Styles */
-        .team-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .team-member {
-            flex: 1;
-            min-width: 200px;
-            text-align: center;
-        }
-        
-        .team-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            background-color: #eaeaea;
-            border: 2px dashed #ccc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #7f8c8d;
-            font-style: italic;
-        }
-        
-        /* Side-by-side layout for story and purpose sections */
-        .story-container, .purpose-container {
-            display: flex;
-            gap: 30px;
-            align-items: flex-start;
-            margin-top: 20px;
-        }
-        
-        .story-image, .purpose-image {
-            flex: 1;
-            min-height: 250px;
-            background-color: #eaeaea;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #7f8c8d;
-            font-style: italic;
-            text-align: center;
-        }
-        
-        .story-text, .purpose-text {
-            flex: 2;
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .story-container, .purpose-container {
-                flex-direction: column;
-            }
-            
-            .story-image, .purpose-image {
-                width: 100%;
-                min-height: 200px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Summit</title>
+  <style>
+    :root {
+      --midnight: #0C1167;
+      --mist: #E8EBF7;
+      --forest: #43C06D;
+      --slate: #50514F;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
+    }
+
+    body {
+      background: #f8f9fc;
+      color: #2f3142;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      background: #fff;
+      border-bottom: 1px solid rgba(12, 17, 103, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem clamp(1.5rem, 4vw, 3rem);
+    }
+
+    .logo {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--midnight);
+      text-decoration: none;
+      letter-spacing: 0.14rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--midnight);
+      text-decoration: none;
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.35rem;
+      width: 100%;
+      height: 2px;
+      background: var(--forest);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.2s ease;
+    }
+
+    .nav-link:hover::after { transform: scaleX(1); }
+
+    main {
+      flex: 1;
+      padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 6vw, 4rem) 4rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: min(68rem, 100%);
+      display: grid;
+      gap: 2.5rem;
+    }
+
+    .page-header {
+      text-align: center;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2.4rem, 5vw, 3.4rem);
+      color: var(--midnight);
+      letter-spacing: 0.08rem;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: rgba(12, 17, 103, 0.65);
+      letter-spacing: 0.12rem;
+      text-transform: uppercase;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid rgba(12, 17, 103, 0.08);
+      border-radius: 1.5rem;
+      padding: clamp(1.8rem, 4vw, 2.5rem);
+      box-shadow: 0 18px 40px rgba(12, 17, 103, 0.08);
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .card h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      color: var(--midnight);
+      border-bottom: 1px solid rgba(12, 17, 103, 0.08);
+      padding-bottom: 0.75rem;
+      letter-spacing: 0.06rem;
+    }
+
+    .card p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #4c4f63;
+    }
+
+    .highlight {
+      background: rgba(67, 192, 109, 0.08);
+      padding: 1.25rem 1.5rem;
+      border-left: 4px solid var(--forest);
+      border-radius: 1rem;
+      color: #357249;
+    }
+
+    .story-container, .purpose-container, .team-container, .contact-info {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .story-layout, .purpose-layout {
+      display: grid;
+      gap: 1.75rem;
+      grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+      align-items: start;
+    }
+
+    .story-image, .purpose-image {
+      min-height: 240px;
+      border-radius: 1.25rem;
+      background: linear-gradient(135deg, rgba(12, 17, 103, 0.12), rgba(67, 192, 109, 0.18));
+      border: 1px dashed rgba(12, 17, 103, 0.2);
+      color: rgba(12, 17, 103, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-style: italic;
+      text-align: center;
+      padding: 1.5rem;
+    }
+
+    .team-container {
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    }
+
+    .team-member {
+      background: rgba(232, 235, 247, 0.35);
+      border-radius: 1.25rem;
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid rgba(12, 17, 103, 0.08);
+    }
+
+    .team-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      background: linear-gradient(135deg, rgba(12, 17, 103, 0.12), rgba(67, 192, 109, 0.15));
+      border: 1px dashed rgba(12, 17, 103, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(12, 17, 103, 0.6);
+      font-style: italic;
+    }
+
+    .contact-info {
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    }
+
+    .contact-item {
+      border: 1px solid rgba(12, 17, 103, 0.08);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      background: rgba(232, 235, 247, 0.3);
+    }
+
+    .contact-item h3 {
+      font-size: 1.05rem;
+      color: var(--midnight);
+      margin-bottom: 0.5rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: rgba(12, 17, 103, 0.55);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--midnight);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    @media (max-width: 720px) {
+      .top-bar { flex-direction: column; gap: 1rem; }
+      .nav-links { gap: 1rem; }
+    }
+  </style>
 </head>
 <body>
+  <header class="top-bar">
+    <a class="logo" href="{{ url_for('auth.sign_in') }}">Summit</a>
+    <nav class="nav-links">
+      <a class="nav-link" href="{{ url_for('landing.index') }}">Home</a>
+      <a class="nav-link" href="{{ url_for('auth.sign_in') }}">Sign in</a>
+      <a class="nav-link" href="{{ url_for('auth.sign_up') }}">Start your ascent</a>
+    </nav>
+  </header>
+
+  <main>
     <div class="container">
-        <header>
-            <h1>About Summit</h1>
-            <p class="tagline">Into the Mountains...</p>
-        </header>
-        
-        <div class="section">
-            <h2>Our Story</h2>
-            <div class="story-container">
-                <div class="story-image">
-                    [Our Story Image - Add an image representing your journey]
-                </div>
-                <div class="story-text">
-                    <p>Summit is a hackathon project focused on spaced repetition learning.</p>
-                    
-                    <p>Our journey began with a realization. In an attempt to search for the most optimal way of studying in the mountains of work 
-                        in high school, our founders decided to utilize the spaced repetition method. Paired with our love for nature and the lack of 
-                        a fully optimized, fleshed out system, Summit came to life.
-                    </p>
-                </div>
-            </div>
+      <header class="page-header">
+        <span class="tagline">Into the mountains</span>
+        <h1>About Summit</h1>
+        <p>We are building a calm, focused path for learners who want progress without burnout.</p>
+      </header>
+
+      <section class="card">
+        <h2>Our Story</h2>
+        <div class="story-layout">
+          <div class="story-image">Our climb started with a hunt for a better way to remember.</div>
+          <div class="story-text">
+            <p>Summit began as a hackathon experiment fueled by late-night study sessions and a shared love for the mountains. We wanted a tool that felt encouraging, not overwhelming—one that found the balance between spaced repetition science and the joy of steady progress.</p>
+            <p>What started as a sketch on a whiteboard turned into a living platform the moment we paired mindful pacing with visuals that keep the journey front and center. Summit keeps every ascent purposeful so each review leaves you a little higher than before.</p>
+          </div>
         </div>
-        
-        <div class="section">
-            <h2>Purpose</h2>
-            <div class="purpose-container">
-                <div class="purpose-text">
-                    <p>Summit is a spaced repetition learning platform to help students learn more effectively.</p>
-                    
-                    <p>Our approach uses algorithms that determine the optimal time to review material, ensuring long-term retention without overwhelming study sessions.
-                        This optimization allows for students to learn far more effectively than any conventional flashcard or learning resource.
-                        At the same time, we hope to promote care and reverence for our environment and mother nature. 
-                    </p>
-                </div>
-                <div class="purpose-image">
-                    [Purpose Image - Add an image representing learning or education]
-                </div>
+      </section>
+
+      <section class="card">
+        <h2>Purpose</h2>
+        <div class="purpose-layout">
+          <div class="purpose-text">
+            <p>We craft learning climbs that respect your time. Summit’s scheduling engine decides when to review so you can focus entirely on the material. Less second-guessing, more consistent wins.</p>
+            <div class="highlight">
+              Our goal is a platform that feels like a well-marked trail—clear, supportive, and still a little adventurous every time you log in.
             </div>
+            <p>Beyond memory science, we hope to inspire stewardship for our shared environments. Every deck completed is a reminder that even the steepest peaks yield to mindful steps.</p>
+          </div>
+          <div class="purpose-image">Visuals of spacious trails and evergreen peaks belong here.</div>
         </div>
-        
-        <div class="section">
-            <h2>Our Team</h2>
-            <p>Meet the talented individuals behind Summit:</p>
-            
-            <div class="team-container">
-                <div class="team-member">
-                    <div class="team-image">
-                        [Rohan's Photo]
-                    </div>
-                    <h3>Rohan Srivastava</h3>
-                    <p>Co-founder & Developer</p>
-                </div>
-                
-                <div class="team-member">
-                    <div class="team-image">
-                        [Aryan's Photo]
-                    </div>
-                    <h3>Aryan Singla</h3>
-                    <p>Co-founder & Developer</p>
-                </div>
-                
-                <div class="team-member">
-                    <div class="team-image">
-                        [Fangwu's Photo]
-                    </div>
-                    <h3>Fangwu Yu</h3>
-                    <p>Co-founder & Developer</p>
-                </div>
-                
-                <div class="team-member">
-                    <div class="team-image">
-                        [Matthew's Photo]
-                    </div>
-                    <h3>Matthew Ocampo</h3>
-                    <p>Co-founder & Developer</p>
-                </div>
-            </div>
-            
-            <p>Our team combines expertise in computer science, education technology, and 
-                our own personal high school experiences and struggles to create the best learning experience possible.</p>
+      </section>
+
+      <section class="card">
+        <h2>Our Team</h2>
+        <p>Summit is built by friends who met in classrooms, coding clubs, and trailheads.</p>
+        <div class="team-container">
+          <div class="team-member">
+            <div class="team-image">Rohan</div>
+            <h3>Rohan Srivastava</h3>
+            <p>Co-founder &amp; Developer</p>
+          </div>
+          <div class="team-member">
+            <div class="team-image">Aryan</div>
+            <h3>Aryan Singla</h3>
+            <p>Co-founder &amp; Developer</p>
+          </div>
+          <div class="team-member">
+            <div class="team-image">Fangwu</div>
+            <h3>Fangwu Yu</h3>
+            <p>Co-founder &amp; Developer</p>
+          </div>
+          <div class="team-member">
+            <div class="team-image">Matthew</div>
+            <h3>Matthew Ocampo</h3>
+            <p>Co-founder &amp; Developer</p>
+          </div>
         </div>
-        
-        <div class="section">
-            <h2>Contact Us</h2>
-            <p>We'd love to hear from you! Get in touch using any of the following methods:</p>
-            
-            <div class="contact-info">
-                <div class="contact-item">
-                    <h3>Email</h3>
-                    <p>contact@summit.com</p>
-                </div>
-                
-                <div class="contact-item">
-                    <h3>Phone</h3>
-                    <p>911</p>
-                </div>
-                
-                <div class="contact-item">
-                    <h3>Address</h3>
-                    <p>151 Moore St, Princeton, NJ 08540</p>
-                </div>
-            </div>
+      </section>
+
+      <section class="card">
+        <h2>Contact Us</h2>
+        <p>We would love to hear from you. Reach out anytime—we will meet you at basecamp.</p>
+        <div class="contact-info">
+          <div class="contact-item">
+            <h3>Email</h3>
+            <p>contact@summit.com</p>
+          </div>
+          <div class="contact-item">
+            <h3>Phone</h3>
+            <p>911</p>
+          </div>
+          <div class="contact-item">
+            <h3>Address</h3>
+            <p>151 Moore St, Princeton, NJ 08540</p>
+          </div>
         </div>
-        
-        <footer>
-            <p>&copy; 2025 Summit. All rights reserved.</p>
-        </footer>
+      </section>
     </div>
+  </main>
+
+  <footer>
+    © 2025 Summit. Crafted with care for curious minds. <a href="{{ url_for('landing.index') }}">Return to the landing page.</a>
+  </footer>
 </body>
 </html>

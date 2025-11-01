@@ -1,8 +1,14 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
 
 landing_bp = Blueprint("landing", __name__, template_folder="templates")
 
 @landing_bp.route("/")
+def root():
+    """Make the sign-in screen the default landing experience."""
+    return redirect(url_for("auth.sign_in"))
+
+@landing_bp.route("/home")
+@landing_bp.route("/landing")
 def index():
     return render_template("index.html")
 
@@ -12,6 +18,4 @@ def about():
 
 @landing_bp.route("/sign-in")
 def sign_in():
-    return render_template("sign_in.html")
-
-
+    return redirect(url_for("auth.sign_in"))
