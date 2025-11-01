@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summit | Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --midnight: #0C1167;
@@ -185,15 +186,14 @@
 </head>
 <body>
     <aside class="sidebar">
-        <a class="brand" href="{{ url_for('landing.index') }}">Summit</a>
+        <a class="brand" href="{{ url_for('landing.home') }}">Learn</a>
         <nav>
             <ul class="nav-list">
-                <li class="nav-item"><a href="{{ url_for('landing.index') }}">Home</a></li>
-                <li class="nav-item"><a href="#">Summit</a></li>
-                <li class="nav-item"><a href="#">Profile</a></li>
-                <li class="nav-item"><a href="#">Friends</a></li>
-                <li class="nav-item"><a href="{{ url_for('auth.sign_in') }}">Sign In</a></li>
-                <li class="nav-item"><a href="{{ url_for('landing.about') }}">About</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.index') }}"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.home') }}"><i class="fas fa-layer-group"></i> Learn</a></li>
+                <li class="nav-item"><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                <li class="nav-item"><a href="#"><i class="fas fa-users"></i> Friends</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.about') }}"><i class="fas fa-info-circle"></i> About</a></li>
             </ul>
         </nav>
     </aside>

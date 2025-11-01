@@ -524,14 +524,14 @@
 </head>
 <body>
     <aside class="sidebar">
-        <a class="brand" href="#">Summit</a>
+        <a class="brand" href="{{ url_for('landing.home') }}">Learn</a>
         <nav>
             <ul class="nav-list">
-                <li class="nav-item"><a href="#"><i class="fas fa-home"></i> Home</a></li>
-                <li class="nav-item"><a href="flashcards.html"><i class="fas fa-layer-group"></i> Flashcards</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.index') }}"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.home') }}"><i class="fas fa-layer-group"></i> Learn</a></li>
                 <li class="nav-item"><a href="#"><i class="fas fa-user"></i> Profile</a></li>
                 <li class="nav-item"><a href="#"><i class="fas fa-users"></i> Friends</a></li>
-                <li class="nav-item"><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.about') }}"><i class="fas fa-info-circle"></i> About</a></li>
             </ul>
         </nav>
     </aside>
