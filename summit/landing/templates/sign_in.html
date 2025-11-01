@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit | Sign In</title>
+    <style>
+        :root {
+            --midnight: #0C1167;
+            --mist: #E8EBF7;
+            --forest: #43C06D;
+            --slate: #50514F;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
+            background: #f8f9fc;
+            color: #2f3142;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            background: #fff;
+            border-bottom: 1px solid rgba(12, 17, 103, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem clamp(1.5rem, 4vw, 3rem);
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--midnight);
+            text-decoration: none;
+            letter-spacing: 0.14rem;
+        }
+
+        .nav-link {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--midnight);
+            text-decoration: none;
+        }
+
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+            gap: clamp(2rem, 6vw, 5rem);
+            padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 8vw, 6rem);
+            align-items: center;
+        }
+
+        .illustration {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sketchfab-wrapper {
+            width: min(32rem, 90vw);
+            aspect-ratio: 1;
+            border-radius: 2rem;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 10%, #ffffff 0%, #e0e5f7 70%);
+            box-shadow: 0 20px 48px rgba(12, 17, 103, 0.15);
+        }
+
+        .sketchfab-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .content {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2.1rem, 4vw, 3.2rem);
+            color: var(--midnight);
+            line-height: 1.1;
+        }
+
+        p {
+            margin: 0;
+            font-size: 1.05rem;
+            color: #4c4f63;
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.9rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.9rem 1.8rem;
+            border-radius: 999px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--forest);
+            color: #fff;
+            box-shadow: 0 14px 28px rgba(67, 192, 109, 0.28);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 36px rgba(67, 192, 109, 0.32);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: var(--midnight);
+            border: 1px solid rgba(12, 17, 103, 0.2);
+            box-shadow: 0 8px 18px rgba(12, 17, 103, 0.1);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 26px rgba(12, 17, 103, 0.14);
+        }
+
+        .credit {
+            font-size: 0.75rem;
+            color: rgba(12, 17, 103, 0.6);
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .credit a {
+            color: var(--midnight);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 720px) {
+            main {
+                padding-top: clamp(2rem, 12vw, 3rem);
+            }
+
+            .sketchfab-wrapper {
+                width: min(24rem, 100%);
+                aspect-ratio: 4 / 3;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <a class="logo" href="{{ url_for('main.index') }}">Summit</a>
+        <a class="nav-link" href="{{ url_for('main.index') }}">Back to home</a>
+    </header>
+    <main>
+        <section class="illustration">
+            <div class="sketchfab-wrapper">
+                <iframe title="Low Poly Mountain" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/dabda46f9be2416c93a4b584be17786b/embed?ui_theme=dark"></iframe>
+            </div>
+        </section>
+        <section class="content">
+            <h1>The focused, fun way to reach your learning summit.</h1>
+            <p>Build your spaced-repetition streak with handcrafted decks and crisp daily climbs. Summit keeps every ascent engaging so you can lock in memories that last.</p>
+            <div class="actions">
+                <a class="btn btn-primary" href="#">Get started</a>
+                <a class="btn btn-secondary" href="#">I already have an account</a>
+            </div>
+            <div class="credit">
+                Mountain embed courtesy of <a href="https://sketchfab.com/lowpolyartwork" target="_blank" rel="noreferrer">Poly Craftsman</a> on Sketchfab.
+            </div>
+        </section>
+    </main>
+</body>
+</html>

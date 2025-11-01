@@ -3,9 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Summit | Into the Mountains</title>
+    <style>
+        :root {
+            --midnight: #0C1167;
+            --mist: #ACADBC;
+            --lavender: #9B8ECE;
+            --slate: #50514F;
+            --nav-bg: rgba(12, 17, 103, 0.82);
+            --nav-hover: rgba(155, 142, 206, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
+            color: var(--mist);
+            background: linear-gradient(135deg, var(--midnight) 0%, var(--lavender) 55%, var(--slate) 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: clamp(12rem, 18vw, 15rem);
+            background: var(--nav-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            gap: 2rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.18rem;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 0.9rem;
+            color: rgba(242, 244, 252, 0.9);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.05rem;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .nav-item a::before {
+            content: "";
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 0.25rem;
+            background: rgba(172, 173, 188, 0.45);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .nav-item a:hover {
+            background: var(--nav-hover);
+            transform: translateX(3px);
+        }
+
+        .nav-item a:hover::before {
+            background: #fff;
+            transform: scale(1.2);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: clamp(3rem, 8vw, 6rem);
+        }
+
+        .hero {
+            max-width: 48rem;
+            width: min(100%, 48rem);
+            background: rgba(12, 17, 103, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: clamp(2.5rem, 6vw, 4rem);
+            border-radius: 1.75rem;
+            display: grid;
+            gap: 1.5rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 24px 48px rgba(12, 17, 103, 0.35);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2.5rem, 6vw, 3.8rem);
+            line-height: 1.05;
+            color: #fff;
+        }
+
+        p {
+            margin: 0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: rgba(229, 231, 242, 0.9);
+        }
+
+        .cta {
+            margin-top: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1.7rem;
+            border-radius: 999px;
+            background: #fff;
+            color: var(--midnight);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+        }
+
+        .cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: rgba(225, 227, 236, 0.7);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+
+            .nav-list {
+                display: flex;
+                gap: 0.75rem;
+            }
+
+            .nav-item a {
+                padding: 0.65rem 0.9rem;
+            }
+
+            main {
+                padding: clamp(2rem, 8vw, 4rem);
+            }
+
+            .hero {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>pluh</h1>
+    <aside class="sidebar">
+        <a class="brand" href="{{ url_for('main.index') }}">Summit</a>
+        <nav>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.index') }}">Summit</a></li>
+                <li class="nav-item"><a href="#">Profile</a></li>
+                <li class="nav-item"><a href="#">Friends</a></li>
+                <li class="nav-item"><a href="{{ url_for('main.sign_in') }}">Sign In</a></li>
+                <li class="nav-item"><a href="#">About</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <main>
+        <section class="hero">
+            <h1>Into the mountains, one deck at a time.</h1>
+            <p>Summit turns your study climb into a paced ascent. Light sessions, smart spacing, and a clear view of where the next switchback takes you.</p>
+            <a class="cta" href="{{ url_for('main.sign_in') }}">Start the climb</a>
+            <footer>
+                © <span id="year"></span> Summit
+            </footer>
+        </section>
+    </main>
+    <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>
