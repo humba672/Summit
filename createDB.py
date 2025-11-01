@@ -1,5 +1,6 @@
 from summit import db, create_app
 from summit.auth.userModel import User
+from summit.flashcards.vocabModels import setList, terms, userTerms
 
 app = create_app()
 
