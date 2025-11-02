@@ -50,12 +50,32 @@ def create_set(title, description, cards, ID, index=0):
 def flashcards():
     setid = request.args.get('set')
     set_instance = setList.query.filter_by(id=setid, author_id=current_user.id).first()
-    terms_list = terms.query.filter_by(set_list_id=set_instance.id).all()
-    flashcards_data = [{"front": term.term, "back": term.definition} for term in terms_list]
+    if not set_instance:
+        return "Set not found", 404
+    total_cards = terms.query.filter_by(set_list_id=set_instance.id).count()
     return render_template("flashcards.html", 
                          name=set_instance.name,
-                         flashcards=flashcards_data,
-                         total_cards=len(flashcards_data))
+                         total_cards=total_cards,
+                         set_id=setid)
+
+@flashcards_bp.route("/api/flashcards/<int:set_id>/card/<int:index>")
+@login_required
+def get_card(set_id, index):
+    set_instance = setList.query.filter_by(id=set_id, author_id=current_user.id).first()
+    if not set_instance:
+        return {"error": "Set not found"}, 404
+    
+    terms_list = terms.query.filter_by(set_list_id=set_instance.id).all()
+    if 0 <= index < len(terms_list):
+        term = terms_list[index]
+        return {
+            "front": term.term,
+            "back": term.definition,
+            "index": index,
+            "total": len(terms_list)
+        }
+    else:
+        return {"error": "Card index out of range"}, 404
 
 @login_required
 @flashcards_bp.route("/selection")
@@ -84,4 +104,5 @@ def selection():
 
 @flashcards_bp.route("/flashcards/report", methods=["POST"])
 def report_progress():
-    pass
+    data = request.get_json()
+    term_id = data.get("cardIndex")
