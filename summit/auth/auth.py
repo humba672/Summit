@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
-from flask_login import login_user, logout_user
+from flask_login import login_user, current_user, logout_user
 from .userModel import User
 from .. import db
 
@@ -68,4 +68,4 @@ def sign_up():
 
 @auth_bp.route("/profile")
 def profile():
-    return render_template("profile.html")
+    return render_template("profile.html", user=current_user)
