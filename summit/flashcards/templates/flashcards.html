@@ -144,18 +144,20 @@
             margin-top: 1rem;
         }
 
-        .review-banner {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.85rem 1.5rem;
-            border-radius: 999px;
-            background: rgba(12, 17, 103, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            color: #fff;
-            font-weight: 600;
-            letter-spacing: 0.05rem;
-            box-shadow: 0 16px 32px rgba(12, 17, 103, 0.35);
+        /* Simple text box above flashcard */
+        .info-box {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            color: rgba(229, 231, 242, 0.9);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
         }
 
         .flashcard {
@@ -420,48 +422,6 @@
             opacity: 0.7;
             pointer-events: none;
         }
-
-            .brand {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.65rem;
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: 0.18rem;
-            letter-spacing: 0.12rem;
-            color: #fff;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-
-        .brand-logo {
-            width: 34px;
-            height: 34px;
-            object-fit: contain;
-        }
-
-        .review-banner {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.85rem 1.5rem;
-            border-radius: 999px;
-            background: rgba(12, 17, 103, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            color: #fff;
-            font-weight: 600;
-            letter-spacing: 0.05rem;
-            box-shadow: 0 16px 32px rgba(12, 17, 103, 0.35);
-        }
-
-        .review-banner strong {
-            font-size: 1.05rem;
-            letter-spacing: 0.07rem;
-        }
-
-        .flashcard-container[data-review-visible="0"] .review-banner {
-            display: none;
-        }
     </style>
 </head>
 
@@ -503,6 +463,11 @@
         </div>
 
         <div class="flashcard-container" style="justify-content: center;">
+            <!-- Simple text box above flashcard -->
+            <div class="info-box" id="info-box">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+
             <div class="flashcard" id="flashcard">
                 <div class="flashcard-inner">
                     <div class="flashcard-front">
@@ -563,6 +528,7 @@
             const hardBtn = document.getElementById('hard-btn');
             const mediumBtn = document.getElementById('medium-btn');
             const easyBtn = document.getElementById('easy-btn');
+            const infoBox = document.getElementById('info-box');
 
             const cardFront = document.getElementById('card-front');
             const cardBack = document.getElementById('card-back');
@@ -605,6 +571,13 @@
                     totalCards = data.totalCards || 0;
                     masteredCards = data.masteredCards || 0;
                     currentCardID = data.currentCardID || 0;
+
+                    // Update info box with any message from backend
+                    if (data.message) {
+                        infoBox.textContent = data.message;
+                    } else {
+                        infoBox.textContent = ""; // Clear if no message
+                    }
 
                     // Update UI with new card
                     updateCardDisplay();
@@ -652,6 +625,39 @@
                     // Fallback: just load next card even if report fails
                     await loadNextCard();
                 }
+            }
+
+            // Fallback function for demo purposes
+            function loadDemoCard() {
+                const demoCards = [
+                    { 
+                        id: 1, 
+                        front: "What is Spaced Repetition?", 
+                        back: "A learning technique that increases intervals of time between subsequent review of previously learned material",
+                        position: 1
+                    },
+                    { 
+                        id: 2, 
+                        front: "What is an Algorithm?", 
+                        back: "A step-by-step procedure for solving a problem",
+                        position: 2
+                    },
+                    { 
+                        id: 3, 
+                        front: "What is an API?", 
+                        back: "Application Programming Interface - a set of rules that allows programs to talk to each other",
+                        position: 3
+                    }
+                ];
+                
+                currentCard = demoCards[currentCardIndex % demoCards.length];
+                totalCards = demoCards.length;
+                currentCardIndex++;
+                
+                // For demo, you can set any message here or leave it empty
+                infoBox.textContent = "";
+                
+                updateCardDisplay();
             }
 
             // Update the card display with current card data
@@ -712,21 +718,6 @@
             // Load the first card
             loadNextCard();
         });
-
-        function countdown(s) {
-            const d = Math.floor(s / (3600 * 24));
-            s -= d * 3600 * 24;
-            const h = Math.floor(s / 3600);
-            s -= h * 3600;
-            const m = Math.floor(s / 60);
-            s -= m * 60;
-            const tmp = [];
-            (d) && tmp.push(d + 'd');
-            (d || h) && tmp.push(h + 'h');
-            (d || h || m) && tmp.push(m + 'm');
-            tmp.push(s + 's');
-            return tmp.join(' ');
-        }
     </script>
 </body>
 
