@@ -249,7 +249,7 @@
   </aside>
 
   <main>
-    <section class="mountain-stage" data-altitude="100">
+    <section class="mountain-stage" data-altitude="{{ current_user.altitude }}">
       <div class="summit-banner" id="summit-banner">You have reached the Summit</div>
       <div class="mountain-clip">
         <img
@@ -268,7 +268,7 @@
         <div class="altitude-bar">
           <div class="altitude-fill"></div>
         </div>
-        <span class="altitude-percent-label" id="altitude-readout">100%</span>
+        <span class="altitude-percent-label" id="altitude-readout">{{ current_user.altitude }}</span>
       </div>
 
     </section>

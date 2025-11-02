@@ -55,6 +55,7 @@ def sign_up():
                 username=name,
                 email=email,
                 password_hash=generate_password_hash(password),
+                altitude=0
             )
 
             db.session.add(new_user)
