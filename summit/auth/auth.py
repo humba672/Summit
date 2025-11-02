@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask_login import login_required, current_user
 
 auth_bp = Blueprint(
     "auth",
@@ -54,3 +55,8 @@ def sign_up():
             return redirect(url_for("auth.sign_in"))
 
     return render_template("sign_up.html")
+
+@login_required
+@auth_bp.route('/profile')
+def profile():
+    return render_template('profile.html', user=current_user)

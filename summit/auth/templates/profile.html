@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ user.username }} | Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --midnight: #0C1167;
+      --mist: #ACADBC;
+      --lavender: #9B8ECE;
+      --slate: #50514F;
+      --nav-bg: rgba(12, 17, 103, 0.82);
+      --nav-hover: rgba(155, 142, 206, 0.35);
+      --altitude-track: rgba(255, 255, 255, 0.2);
+      --altitude-fill: linear-gradient(180deg, #43C06D 0%, #0C1167 100%);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
+      color: var(--mist);
+      background: linear-gradient(135deg, var(--midnight), var(--lavender), var(--slate));
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: clamp(12rem, 18vw, 15rem);
+      background: var(--nav-bg);
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      gap: 2rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      z-index: 3;
+    }
+
+    .brand {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.18rem;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      border-radius: 0.9rem;
+      color: rgba(242, 244, 252, 0.9);
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.05rem;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-item a::before {
+      content: "";
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 0.25rem;
+      background: rgba(172, 173, 188, 0.45);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .nav-item a:hover { background: var(--nav-hover); transform: translateX(3px); }
+    .nav-item a:hover::before { background: #fff; transform: scale(1.2); }
+
+    main {
+      flex: 1;
+      position: relative;
+      min-height: 100vh;
+      padding: 4rem 3rem 2rem 3rem; /* extra top padding for welcome header */
+    }
+
+    /* ===== WELCOME HEADER ===== */
+    .welcome-header {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--mist);
+      margin-bottom: 3rem; /* separate from first section */
+    }
+
+    /* ===== PROFILE SECTIONS ===== */
+    .profile-section {
+      background: rgba(12,17,103,0.75);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .profile-section h2 {
+      margin-top: 0;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      color: var(--mist);
+    }
+
+    .altitude {
+      font-size: 1.1rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 1rem;
+      background: var(--altitude-track);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .progress-bar div {
+      height: 100%;
+      width: 80%;
+      background: var(--altitude-fill);
+      transition: width 0.4s ease;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.08);
+      padding: 1rem;
+      border-radius: 0.75rem;
+      text-align: center;
+    }
+
+    .stat-card h3 {
+      margin: 0.5rem 0 0;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 900px) {
+      body { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+      }
+      main { padding: 6rem 1.5rem 2rem 1.5rem; }
+      .welcome-header { font-size: 2rem; margin-bottom: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('auth.profile') }}">Profile</a>
+    <nav>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="{{ url_for('landing.index') }}"><i class="fas fa-home"></i> Home</a></li>
+        <li class="nav-item"><a href="{{ url_for('landing.home') }}"><i class="fas fa-layer-group"></i> Learn</a></li>
+        <li class="nav-item"><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+        <li class="nav-item"><a href="#"><i class="fas fa-users"></i> Friends</a></li>
+        <li class="nav-item"><a href="{{ url_for('landing.about') }}"><i class="fas fa-info-circle"></i> About</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main>
+    <!-- Welcome Header -->
+    <div class="welcome-header">
+      Welcome, {{ user.username }}
+    </div>
+
+    <!-- Overview Section -->
+    <div class="profile-section">
+      <h2>Overview</h2>
+      <p>Your journey is well underway — keep climbing!</p>
+      <div class="progress-bar"><div></div></div>
+    </div>
+
+    <!-- Altitude Section -->
+    <div class="profile-section">
+      <h2>Altitude</h2>
+      <p class="altitude">Altitude: {{ user.altitude }} ft</p>
+      <div class="progress-bar"><div style="width: 80%;"></div></div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="profile-section">
+      <h2>Stats</h2>
+      <div class="stats">
+        <div class="stat-card">
+          <p>Flashcards Completed</p>
+          <h3>742</h3>
+        </div>
+        <div class="stat-card">
+          <p>Decks Studied</p>
+          <h3>12</h3>
+        </div>
+        <div class="stat-card">
+          <p>Days Active</p>
+          <h3>56</h3>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
