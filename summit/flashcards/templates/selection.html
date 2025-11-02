@@ -425,7 +425,112 @@
             text-align: center;
         }
 
-        /* No modal styles needed */
+        /* Modal styles for term selection */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, var(--midnight) 0%, var(--lavender) 100%);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .modal-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .term-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .term-input-label {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .term-input {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.75rem;
+            padding: 0.85rem 1rem;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .term-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 999px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn-cancel {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .modal-btn-confirm {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--midnight);
+        }
+
+        .modal-btn-confirm:hover {
+            background: #fff;
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none;
+        }
 
         @media (max-width: 768px) {
             body {
@@ -589,7 +694,29 @@
         </footer>
     </main>
 
+    <!-- Term Selection Modal -->
+    <div class="modal-overlay hidden" id="term-modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Select Terms to Study</h2>
+            <p class="modal-description">How many terms would you like to include in this study session?</p>
+            
+            <div class="term-input-container">
+                <label class="term-input-label" for="term-count">Number of Terms:</label>
+                <input type="number" id="term-count" class="term-input" min="1" max="50" value="10">
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="cancel-btn">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="confirm-btn">Begin Ascent</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Global variables
+        let currentSetId = null;
+        let totalTerms = 25; // Default value, would normally come from backend
+
         function buildSetDescriptions(displayName, baseName) {
             const lowerBase = baseName.toLowerCase();
             return [
@@ -606,6 +733,11 @@
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
             const indicatorsContainer = document.getElementById('indicators');
+            const modal = document.getElementById('term-modal');
+            const cancelBtn = document.getElementById('cancel-btn');
+            const confirmBtn = document.getElementById('confirm-btn');
+            const termCountInput = document.getElementById('term-count');
+            
             let currentSlide = 0;
             
             // Get category from URL or default to History
@@ -668,10 +800,33 @@
                 goToSlide(currentSlide);
             }
             
-            // Event listeners
+            // Event listeners for carousel
             prevBtn.addEventListener('click', prevSlide);
             nextBtn.addEventListener('click', nextSlide);
             
+            // Event listeners for modal
+            cancelBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+            
+            confirmBtn.addEventListener('click', () => {
+                const termCount = parseInt(termCountInput.value);
+                if (termCount < 1 || termCount > totalTerms) {
+                    alert(`Please enter a number between 1 and ${totalTerms}`);
+                    return;
+                }
+                
+                // Redirect to flashcards with the selected term count
+                const categoryDisplay = window.activeCategoryDisplay || document.getElementById('category-title').textContent;
+                window.location.href = `/flashcards?category=${encodeURIComponent(categoryDisplay)}&set=${currentSetId}&terms=${termCount}`;
+            });
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
             
             // Set current year in footer
             document.getElementById("year").textContent = new Date().getFullYear();
@@ -681,8 +836,15 @@
         });
         
         function startStudying(setId) {
-            const categoryDisplay = window.activeCategoryDisplay || document.getElementById('category-title').textContent;
-            window.location.href = `/flashcards?category=${encodeURIComponent(categoryDisplay)}&set=${setId}`;
+            // Store the set ID for later use
+            currentSetId = setId;
+            
+            // Show the term selection modal
+            const modal = document.getElementById('term-modal');
+            modal.classList.remove('hidden');
+            
+            // Focus on the input field
+            document.getElementById('term-count').focus();
         }
         
         function goBack() {
