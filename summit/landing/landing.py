@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from ..flashcards.vocabModels import setList, terms, userTerms
 from .. import db
 from flask_login import login_required, current_user
+from fsrs import Card
 
 landing_bp = Blueprint(
     "landing",
@@ -63,12 +64,13 @@ def create_set():
     set_name = request.form.get("set-name", "Untitled Set").strip()
     set_category = request.form.get("set-category").strip()
     flashcards_data = request.form.get("set-text", "").strip()
+    description = request.form.get("set-desc", "").strip()
 
     if not flashcards_data:
         flash("Please provide flashcards data to create a set.", "error")
         return redirect(url_for("landing.home"))
 
-    set_instance = setList.query.filter_by(name=set_name, category=set_category, author_id=current_user.id).first()
+    set_instance = setList.query.filter_by(name=set_name, category=set_category, description=description, author_id=current_user.id).first()
 
     if set_instance:
         flash("Name already in use.", "error")
@@ -88,6 +90,9 @@ def create_set():
             continue
         terms_instance = terms(term=term.strip(), definition=definition.strip(), set_list_id=set_instance.id)
         db.session.add(terms_instance)
+        db.session.flush()
+        userterms_instance = userTerms(user_id=current_user.id, term_id=terms_instance.id, card_json=Card().to_json())
+        db.session.add(userterms_instance)
     db.session.commit()
     if not flashcards:
         flash("No valid flashcards found in the provided data.", "error")
