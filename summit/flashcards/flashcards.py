@@ -124,8 +124,12 @@ def next_card():
                     continue
             else:
                 due_cards.append((ut, card))
+    
+    for k in session['new']:
+        due_cards = [dc for dc in due_cards if dc[0].term_id != k]
+
     if not due_cards:
-        return {"message": "NA"}, 200
+        return {'message': "No more cards to review right now. Great job!"}, 204
 
     if len(due_cards) > session.get('maxDue', 0):
         session['maxDue'] = len(due_cards)
@@ -167,7 +171,6 @@ def report_progress():
     Card_data, _ = scheduler.review_card(Card_data, rating)
     time = Card_data.due - datetime.now(timezone.utc)
     time = time.total_seconds()
-    print(time)
     user_term.card_json = Card_data.to_json()
     db.session.commit()
 
