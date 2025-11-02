@@ -45,14 +45,20 @@ def create_set(title, description, cards, ID, index=0):
 
 @flashcards_bp.route("/flashcards")
 def flashcards():
-    return render_template("flashcards.html")
+    setid = request.args.get('set')
+    set_instance = setList.query.filter_by(id=setid, author_id=current_user.id).first()
+    terms_list = terms.query.filter_by(set_list_id=set_instance.id).all()
+    flashcards_data = [{"front": term.term, "back": term.definition} for term in terms_list]
+    return render_template("flashcards.html", 
+                         name=set_instance.name,
+                         flashcards=flashcards_data,
+                         total_cards=len(flashcards_data))
 
 @login_required
 @flashcards_bp.route("/selection")
 def selection():
     cat = request.args.get('category')
     sets = setList.query.filter_by(author_id=current_user.id, category=cat).all()
-    print(sets)
     carousel = ""
     
     # Create carousel HTML for each set
@@ -69,7 +75,6 @@ def selection():
     # Add closing div if there are any sets
     if sets:
         carousel += "\n            </div>"  # Close the carousel div
-    
-    print(carousel)
+
 
     return render_template("selection.html", carousel=carousel, subject=cat)

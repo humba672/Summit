@@ -535,13 +535,8 @@
             const mediumBtn = document.getElementById('medium-btn');
             const easyBtn = document.getElementById('easy-btn');
             
-            // Initialize flashcards array
-            let flashcards = [
-                { front: "What is Spaced Repetition?", back: "A learning technique that increases intervals of time between subsequent review of previously learned material", nextReviewDays: 2 },
-                { front: "What is an Algorithm?", back: "A step-by-step procedure for solving a problem or accomplishing a task", nextReviewDays: 3 },
-                { front: "What is an API?", back: "Application Programming Interface - a set of rules that allows programs to communicate with each other", nextReviewDays: 5 }
-            ];
-            
+            // Initialize flashcards array from Python data
+            flashcards = {{ flashcards|tojson|safe }};
             let currentCardIndex = 0;
             let totalCards = flashcards.length;
             
