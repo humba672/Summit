@@ -615,8 +615,6 @@
             
             // Get total number of slides from the actual elements
             const totalSlides = carousel.querySelectorAll('.mountain-set').length;
-
-            updateCategoryContent(category);
             
             // Create indicators and mark the first set as active
             const setElements = document.querySelectorAll('.mountain-set');
@@ -682,33 +680,6 @@
             // Auto-advance carousel (optional)
             setInterval(nextSlide, 8000);
         });
-        
-        function updateCategoryContent(categoryKey) {
-            const config = CATEGORY_CONFIG[categoryKey] || CATEGORY_CONFIG['History'];
-            const categoryProgress = document.getElementById('category-progress');
-            const progressBar = document.getElementById('category-progress-bar');
-            const categoryTitle = document.getElementById('category-title');
-
-            const setTitles = config.setTitles || [];
-            const setDescriptions = config.setDescriptions || buildSetDescriptions(config.display || categoryKey, (config.setBase || config.display || categoryKey));
-
-            const headerText = config.header || `${setTitles[0]} · ${setTitles[1]}`;
-            categoryTitle.textContent = headerText;
-            document.title = `Summit | ${config.display || categoryKey}`;
-
-            const progressPercent = config.progressPercent ?? 54;
-            if (categoryProgress) categoryProgress.textContent = `${progressPercent}% Complete`;
-            if (progressBar) progressBar.style.width = `${progressPercent}%`;
-
-            for (let i = 1; i <= 5; i++) {
-                const titleEl = document.getElementById(`set-title-${i}`);
-                const descEl = document.getElementById(`set-desc-${i}`);
-                if (titleEl && setTitles[i - 1]) titleEl.textContent = setTitles[i - 1];
-                if (descEl && setDescriptions[i - 1]) descEl.textContent = setDescriptions[i - 1];
-            }
-
-            window.activeCategoryDisplay = config.display || categoryKey;
-        }
         
         function startStudying(setId) {
             const categoryDisplay = window.activeCategoryDisplay || document.getElementById('category-title').textContent;
