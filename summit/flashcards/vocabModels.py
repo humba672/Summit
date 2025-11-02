@@ -28,4 +28,4 @@ class userTerms(db.Model):
     card_json = db.Column(db.Text)
     
     def __repr__(self):
-        return f"<userTerms UserID: {self.user_id}, TermID: {self.term_id}, Progress: {self.progress}>"
+        return f"<userTerms UserID: {self.user_id}, TermID: {self.term_id}>"
