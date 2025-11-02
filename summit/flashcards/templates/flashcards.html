@@ -43,11 +43,21 @@
         }
 
         .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
             font-size: 1.6rem;
             font-weight: 700;
-            letter-spacing: 0.18rem;
+            letter-spacing: 0.12rem;
             color: #fff;
             text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .brand-logo {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
         }
 
         .nav-list {
@@ -530,7 +540,10 @@
 </head>
 <body>
     <aside class="sidebar">
-        <a class="brand" href="#">Summit</a>
+        <a class="brand" href="{{ url_for('landing.index') }}">
+            <img class="brand-logo" src="{{ url_for('landing.static', filename='mountainlogo.png') }}" alt="Summit logo">
+            <span>Summit</span>
+        </a>
         <nav>
             <ul class="nav-list">
                 <li class="nav-item"><a href="#"><i class="fas fa-home"></i> Home</a></li>

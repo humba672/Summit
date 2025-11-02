@@ -35,11 +35,21 @@
     }
 
     .logo {
-      font-size: 1.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 1.6rem;
       font-weight: 700;
       color: var(--midnight);
       text-decoration: none;
-      letter-spacing: 0.14rem;
+      letter-spacing: 0.12rem;
+      text-transform: uppercase;
+    }
+
+    .logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
     }
 
     .nav-links {
@@ -265,7 +275,10 @@
 </head>
 <body>
   <header class="top-bar">
-    <a class="logo" href="{{ url_for('auth.sign_in') }}">Summit</a>
+    <a class="logo" href="{{ url_for('landing.index') }}">
+      <img src="{{ url_for('landing.static', filename='mountainlogo.png') }}" alt="Summit logo">
+      <span>Summit</span>
+    </a>
     <nav class="nav-links">
       <a class="nav-link" href="{{ url_for('landing.index') }}">Home</a>
       <a class="nav-link" href="{{ url_for('auth.sign_in') }}">Sign in</a>
