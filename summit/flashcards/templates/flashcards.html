@@ -610,6 +610,12 @@
                         }
                     });
 
+                    if (response == 204){
+                        infoText.textContent = "No more cards to review right now. Great job!";
+                        flashcard.classList.remove('loading');
+                        return;
+                    }
+
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
@@ -622,10 +628,6 @@
                     masteredCards = data.masteredCards || 0;
                     currentCardID = data.currentCardID || 0;
 
-                    // Update info box with any message from backend
-                    if (data.message) {
-                        infoText.textContent = data.message;
-                    }
                     // Don't hide the box - keep it visible with whatever content it has
 
                     // Update UI with new card
@@ -676,39 +678,6 @@
                 }
             }
 
-            // Fallback function for demo purposes
-            function loadDemoCard() {
-                const demoCards = [
-                    { 
-                        id: 1, 
-                        front: "What is Spaced Repetition?", 
-                        back: "A learning technique that increases intervals of time between subsequent review of previously learned material",
-                        position: 1
-                    },
-                    { 
-                        id: 2, 
-                        front: "What is an Algorithm?", 
-                        back: "A step-by-step procedure for solving a problem",
-                        position: 2
-                    },
-                    { 
-                        id: 3, 
-                        front: "What is an API?", 
-                        back: "Application Programming Interface - a set of rules that allows programs to talk to each other",
-                        position: 3
-                    }
-                ];
-                
-                currentCard = demoCards[currentCardIndex % demoCards.length];
-                totalCards = demoCards.length;
-                currentCardIndex++;
-                
-                // For demo, keep the default message or update it
-                // infoText.textContent = "You will see the previous card in 5 minutes";
-                
-                updateCardDisplay();
-            }
-
             // Update the card display with current card data
             function updateCardDisplay() {
                 if (!currentCard) return;
@@ -717,8 +686,8 @@
                 cardBack.textContent = currentCard.back || currentCard.definition || "No content";
 
                 const position = currentCard.position || currentCardIndex;
-                cardCounter.textContent = `Card ${position} of ${totalCards}`;
-                backCounter.textContent = `Card ${position} of ${totalCards}`;
+                cardCounter.textContent = `Card ${position+1} of ${totalCards}`;
+                backCounter.textContent = `Card ${position+1} of ${totalCards}`;
 
                 // Update progress
                 const progressPercent = Math.round((masteredCards / totalCards) * 100) ||

@@ -109,6 +109,88 @@ def selection():
 @login_required
 @flashcards_bp.route("/flashcards/next-card")
 def next_card():
+    try:
+        set_id = int(session.get("setid"))
+    except (TypeError, ValueError):
+        return {"error": "Missing or invalid set id in session"}, 400
+
+    try:
+        max_new = int(session.get("maxNew") or 0)
+    except (TypeError, ValueError):
+        max_new = 0
+
+    if "new" not in session or not isinstance(session["new"], list):
+        session["new"] = []
+
+    selected_new_ids = set(session["new"])
+    now = datetime.now(timezone.utc)
+    cutoff = now + timedelta(minutes=5)  # review-due tolerance
+
+    query = (
+        userTerms.query
+        .join(terms, userTerms.term_id == terms.id)
+        .filter(
+            userTerms.user_id == current_user.id,
+            terms.set_list_id == set_id
+        )
+    ).all()
+
+    review_due = []  # step > 0 and due soon
+    new_pool  = []   # step == 0 (brand new / learning start)
+
+    for ut in query:
+        card = Card.from_json(ut.card_json)
+
+        if getattr(card, "step", 0) == 0:
+            new_pool.append((ut, card))
+        else:
+            # Only include review cards that are due soon
+            if card.due <= cutoff:
+                review_due.append((ut, card))
+
+   
+    new_due = []
+    for ut, card in new_pool:
+        if ut.term_id in selected_new_ids:
+            new_due.append((ut, card))
+
+
+    remaining = max(0, max_new - len(selected_new_ids))
+    if remaining > 0:
+        for ut, card in new_pool:
+            if ut.term_id in selected_new_ids:
+                continue
+            session["new"].append(ut.term_id)
+            selected_new_ids.add(ut.term_id)
+            new_due.append((ut, card))
+            remaining -= 1
+            if remaining == 0:
+                break
+
+    review_due.sort(key=lambda x: x[1].due)  
+    due_cards = review_due + new_due
+
+    if not due_cards:
+        return {"message": "No more cards to review right now. Great job!"}, 204
+
+    session["maxDue"] = max(session.get("maxDue", 0), len(due_cards))
+
+    ut, card = due_cards[0]
+    term_instance = terms.query.filter_by(id=ut.term_id).first()
+    if not term_instance:
+        return {"error": "Term not found"}, 404
+
+    return jsonify({
+        "card": {
+            "front": term_instance.term,
+            "back": term_instance.definition,
+            "setId": set_id
+        },
+        "totalCards": session["maxDue"],
+        "masteredCards": session["maxDue"] - len(due_cards),
+        "currentCardID": ut.term_id
+    })
+
     user_terms = userTerms.query.filter_by(user_id=current_user.id).all()
     due_cards = []
     for ut in user_terms:
@@ -124,8 +206,12 @@ def next_card():
                     continue
             else:
                 due_cards.append((ut, card))
+    
+    for k in session['new']:
+        due_cards = [dc for dc in due_cards if dc[0].term_id != k]
+
     if not due_cards:
-        return {"message": "NA"}, 200
+        return {'message': "No more cards to review right now. Great job!"}, 204
 
     if len(due_cards) > session.get('maxDue', 0):
         session['maxDue'] = len(due_cards)
@@ -167,7 +253,6 @@ def report_progress():
     Card_data, _ = scheduler.review_card(Card_data, rating)
     time = Card_data.due - datetime.now(timezone.utc)
     time = time.total_seconds()
-    print(time)
     user_term.card_json = Card_data.to_json()
     db.session.commit()
 
