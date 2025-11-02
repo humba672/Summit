@@ -1,9 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import date
-from flask_login import login_user, logout_user
-from .userModel import User
-from .. import db
+from flask_login import login_required, current_user
 
 auth_bp = Blueprint(
     "auth",
@@ -13,6 +9,17 @@ auth_bp = Blueprint(
     static_url_path="/auth_static",
 )
 
+def _credentials_match(email: str, password: str) -> bool:
+    """Return True when credentials match a stored or fallback account."""
+    stored = session.get("registered_user")
+    if stored:
+        if (
+            email.lower() == stored.get("email", "").lower()
+            and password == stored.get("password", "")
+        ):
+            return True
+    return email.lower() == "hackphs" and password == "hackphs"
+
 
 @auth_bp.route("/sign-in", methods=["GET", "POST"])
 def sign_in():
@@ -20,13 +27,13 @@ def sign_in():
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "").strip()
 
-        user = User.query.filter_by(email=email).first()
-
-        if user and check_password_hash(user.password_hash, password):
-            login_user(user)
+        if _credentials_match(email, password):
+            session["signed_in"] = True
+            session["signed_in_email"] = email or "hackphs"
+            flash("Welcome back to Summit.", "success")
             return redirect(url_for("landing.index"))
 
-        flash("We couldn't match those details. Try again or try hackphs / hackphs anytime.", "error")
+        flash("We couldn't match those details. Try again or use hackphs / hackphs.", "error")
 
     return render_template("sign_in.html")
 
@@ -37,30 +44,19 @@ def sign_up():
         name = request.form.get("name", "").strip()
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "").strip()
-        confirm_password = request.form.get("confirm_password", "").strip()
 
         fields = [("Name", name), ("Email", email), ("Password", password)]
         missing = [label for label, value in fields if not value]
         if missing:
             flash(f"Please fill in your {' and '.join(missing)}.", "error")
         else:
-            user = User.query.filter_by(email=email).first()
-            if user:
-                flash("An account with that email already exists. Please sign in or use a different email.", "error")
-                return redirect(url_for("auth.sign_up"))
-            if password != confirm_password:
-                flash("Passwords do not match. Please try again.", "error")
-                return redirect(url_for("auth.sign_up"))
-            new_user = User(
-                username=name,
-                email=email,
-                password_hash=generate_password_hash(password),
-            )
-
-            db.session.add(new_user)
-            db.session.commit()
-            
+            session["registered_user"] = {"name": name, "email": email, "password": password}
             flash("All set! Sign in with your details or try hackphs / hackphs anytime.", "success")
             return redirect(url_for("auth.sign_in"))
 
     return render_template("sign_up.html")
+
+@login_required
+@auth_bp.route('/profile')
+def profile():
+    return render_template('profile.html', user=current_user)

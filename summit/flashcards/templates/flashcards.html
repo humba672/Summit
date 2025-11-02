@@ -132,6 +132,29 @@
             margin-top: 1rem;
         }
 
+        .review-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1.5rem;
+            border-radius: 999px;
+            background: rgba(12, 17, 103, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            color: #fff;
+            font-weight: 600;
+            letter-spacing: 0.05rem;
+            box-shadow: 0 16px 32px rgba(12, 17, 103, 0.35);
+        }
+
+        .review-banner strong {
+            font-size: 1.05rem;
+            letter-spacing: 0.07rem;
+        }
+
+        .flashcard-container[data-review-visible="0"] .review-banner {
+            display: none;
+        }
+
         .flashcard {
             width: 100%;
             max-width: 700px;
@@ -542,7 +565,13 @@
             </div>
         </div>
         
-        <div class="flashcard-container" style="justify-content: center;">
+        <div class="flashcard-container" style="justify-content: center;" data-review-visible="1">
+            <div class="review-banner" id="review-banner">
+                <i class="fas fa-mountain"></i>
+                <span>This card will appear again in
+                    <span id="nexttime">{{time}}</span>
+                </span>
+            </div>
             <div class="flashcard" id="flashcard">
                 <div class="flashcard-inner">
                     <div class="flashcard-front">
@@ -594,40 +623,7 @@
             © <span id="year"></span> Summit - Into the Mountains, one card at a time
         </footer>
     </main>
-
-    <!-- Import Modal (now a POST form) -->
-    <div class="modal" id="import-modal">
-        <div class="modal-content">
-            <form id="import-form" method="post" action="/flashcards/import">
-                <div class="modal-header">
-                    <h2>Import Flashcards</h2>
-                    <button type="button" class="close-btn" id="close-modal">&times;</button>
-                </div>
-
-                <div class="form-group">
-                    <label for="set-name">Set Name</label>
-                    <input name="set_name" type="text" id="set-name" class="form-control" placeholder="Enter a name for your flashcard set">
-                </div>
-
-                <div class="form-group">
-                    <label for="flashcard-text">Flashcard Text</label>
-                    <textarea name="flashcard_text" id="flashcard-text" class="form-control" placeholder="Enter your flashcards in the format: front text | back text (one per line)"></textarea>
-                    <div class="format-example">
-                        <p><strong>Format:</strong> One flashcard per line, with front and back separated by " | "</p>
-                        <p><strong>Example:</strong></p>
-                        <code>Spaced Repetition | A learning technique that increases intervals between reviews</code><br>
-                        <code>Algorithm | A step-by-step procedure for solving a problem</code><br>
-                        <code>API | Application Programming Interface</code>
-                    </div>
-                </div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" id="cancel-import">Cancel</button>
-                    <button type="submit" class="btn" id="import-text">Import Flashcards</button>
-                </div>
-            </form>
-        </div>
-    </div>
+</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -648,9 +644,9 @@
             
             // Initialize flashcards array
             let flashcards = [
-                { front: "What is Spaced Repetition?", back: "A learning technique that increases intervals of time between subsequent review of previously learned material" },
-                { front: "What is an Algorithm?", back: "A step-by-step procedure for solving a problem or accomplishing a task" },
-                { front: "What is an API?", back: "Application Programming Interface - a set of rules that allows programs to communicate with each other" }
+                { front: "What is Spaced Repetition?", back: "A learning technique that increases intervals of time between subsequent review of previously learned material", nextReviewDays: 2 },
+                { front: "What is an Algorithm?", back: "A step-by-step procedure for solving a problem or accomplishing a task", nextReviewDays: 3 },
+                { front: "What is an API?", back: "Application Programming Interface - a set of rules that allows programs to communicate with each other", nextReviewDays: 5 }
             ];
             
             let currentCardIndex = 0;
@@ -663,6 +659,10 @@
                 const frontContent = document.querySelector('.flashcard-front .card-content');
                 const backContent = document.querySelector('.flashcard-back .card-content');
                 const cardCounter = document.querySelector('.card-counter');
+                const reviewContainer = document.querySelector('.flashcard-container');
+                const reviewBanner = document.getElementById('review-banner');
+                const reviewDaysSpan = document.getElementById('review-days');
+                const reviewUnitSpan = document.getElementById('review-unit');
                 
                 frontContent.textContent = flashcards[currentCardIndex].front;
                 backContent.textContent = flashcards[currentCardIndex].back;
@@ -675,6 +675,18 @@
                 
                 // Reset card to front when changing cards
                 flashcard.classList.remove('flipped');
+
+                const nextReviewDays = flashcards[currentCardIndex].nextReviewDays ?? flashcards[currentCardIndex].dueIn ?? 2;
+                if (reviewDaysSpan) {
+                    reviewDaysSpan.textContent = nextReviewDays;
+                }
+                if (reviewUnitSpan) {
+                    reviewUnitSpan.textContent = nextReviewDays === 1 ? 'day' : 'days';
+                }
+                if (reviewBanner && reviewContainer) {
+                    const visible = reviewContainer.dataset.reviewVisible !== '0';
+                    reviewBanner.style.display = visible ? 'inline-flex' : 'none';
+                }
             }
             
             // Flip card functionality
@@ -730,25 +742,34 @@
             
             function updateCardStatus(difficulty) {
                 console.log(`Card marked as: ${difficulty}`);
-                
+
                 // Visual feedback
                 const buttons = [wrongBtn, hardBtn, mediumBtn, easyBtn];
                 buttons.forEach(btn => btn.classList.remove('active'));
-                
+
                 switch(difficulty) {
                     case 'wrong':
                         wrongBtn.classList.add('active');
+                        flashcards[currentCardIndex].nextReviewDays = 1;
                         break;
                     case 'hard':
                         hardBtn.classList.add('active');
+                        flashcards[currentCardIndex].nextReviewDays = 2;
                         break;
                     case 'medium':
                         mediumBtn.classList.add('active');
+                        flashcards[currentCardIndex].nextReviewDays = 3;
                         break;
                     case 'easy':
                         easyBtn.classList.add('active');
+                        flashcards[currentCardIndex].nextReviewDays = 5;
                         break;
                 }
+                const reviewDaysSpan = document.getElementById('review-days');
+                const reviewUnitSpan = document.getElementById('review-unit');
+                const days = flashcards[currentCardIndex].nextReviewDays;
+                if (reviewDaysSpan) reviewDaysSpan.textContent = days;
+                if (reviewUnitSpan) reviewUnitSpan.textContent = days === 1 ? 'day' : 'days';
             }
             
             function nextCard() {
