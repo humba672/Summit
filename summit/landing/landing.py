@@ -16,8 +16,11 @@ def root():
     """Make the sign-in screen the default landing experience."""
     return redirect(url_for("auth.sign_in"))
 
-@landing_bp.route("/home")
 @landing_bp.route("/landing")
+def legacy_landing():
+    return redirect(url_for("landing.index"), code=301)
+
+@landing_bp.route("/home")
 def index():
     return render_template("index.html")
 
