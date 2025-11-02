@@ -1,33 +1,47 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from .. import db
 from ..flashcards.vocabModels import setList, terms, userTerms
 
 flashcards_bp = Blueprint("flashcards", __name__, template_folder="templates")
 
-def create_set(title, description, cards, ID):
-    temp = """       <div class="carousel" id="mountain-carousel">
+def create_set(title, description, cards, ID, index=0):
+    # Define a list of gradient colors for different sets
+    gradients = [
+        "linear-gradient(135deg, #5D4037, #8D6E63, #A1887F, #BCAAA4)",
+        "linear-gradient(135deg, #1A237E, #303F9F, #3F51B5, #7986CB)",
+        "linear-gradient(135deg, #1B5E20, #2E7D32, #388E3C, #66BB6A)",
+        "linear-gradient(135deg, #311B92, #512DA8, #673AB7, #9575CD)",
+        "linear-gradient(135deg, #B71C1C, #C62828, #E53935, #EF5350)"
+    ]
+    
+    # Use modulo to cycle through gradients if there are more sets than gradients
+    gradient = gradients[index % len(gradients)]
+    
+    # For first set, include the carousel div opening tag
+    carousel_start = """       <div class="carousel" id="mountain-carousel">""" if index == 0 else ""
+    
+    # Return the formatted HTML string
+    return carousel_start + f"""
                 <div class="mountain-set">
                     <div class="mountain-container">
-                        <div class="mountain-shape" style="background: linear-gradient(135deg, #5D4037, #8D6E63, #A1887F, #BCAAA4);">
+                        <div class="mountain-shape" style="background: {gradient};">
                             <div class="mountain-content">
-                                <h2 class="mountain-title" id="set-title-1">{}</h2>
-                                <p class="mountain-description" id="set-desc-1">{}</p>
+                                <h2 class="mountain-title" id="set-title-{index + 1}">{title}</h2>
+                                <p class="mountain-description" id="set-desc-{index + 1}">{description}</p>
                                 <div class="mountain-stats">
                                     <div class="stat">
-                                        <div class="stat-value" id="set-cards-1">{}</div>
+                                        <div class="stat-value" id="set-cards-{index + 1}">{cards}</div>
                                         <div class="stat-label">Cards</div>
                                     </div>
                                 </div>
-                                <button class="btn" onclick="startStudying({})">
+                                <button class="btn" onclick="startStudying({ID})">
                                     <i class="fas fa-hiking"></i> Begin Ascent
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>"""
-    
-    return temp.format(title, description, cards, ID)
 
 @flashcards_bp.route("/flashcards")
 def flashcards():
@@ -36,10 +50,26 @@ def flashcards():
 @login_required
 @flashcards_bp.route("/selection")
 def selection():
-    print(current_user.id)
-    sets = setList.query.filter_by(author_id=current_user.id).all()
+    cat = request.args.get('category')
+    sets = setList.query.filter_by(author_id=current_user.id, category=cat).all()
+    print(sets)
     carousel = ""
-    for s in sets:
+    
+    # Create carousel HTML for each set
+    for i, s in enumerate(sets):
         card_count = terms.query.filter_by(set_list_id=s.id).count()
-        carousel += create_set(s.name, s.description or "No description provided.", card_count, s.id)
-    return render_template("selection.html", carousel=carousel)
+        carousel += create_set(
+            s.name,
+            s.description or "No description provided.",
+            card_count,
+            s.id,
+            i  # Pass the index for gradient selection
+        )
+    
+    # Add closing div if there are any sets
+    if sets:
+        carousel += "\n            </div>"  # Close the carousel div
+    
+    print(carousel)
+
+    return render_template("selection.html", carousel=carousel, subject=cat)

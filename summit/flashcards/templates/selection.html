@@ -425,116 +425,7 @@
             text-align: center;
         }
 
-        /* Import Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(12, 17, 103, 0.8);
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 1.75rem;
-            padding: 2.5rem;
-            width: 90%;
-            max-width: 600px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 24px 48px rgba(12, 17, 103, 0.35);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-header h2 {
-            color: #fff;
-            font-size: 1.8rem;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: rgba(229, 231, 242, 0.7);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .close-btn:hover {
-            color: #fff;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            color: #fff;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 1rem;
-            border-radius: 0.9rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1rem;
-            transition: border-color 0.2s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--lavender);
-        }
-
-        .form-control::placeholder {
-            color: rgba(229, 231, 242, 0.5);
-        }
-
-        textarea.form-control {
-            min-height: 200px;
-            resize: vertical;
-            font-family: monospace;
-        }
-
-        .format-example {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0.7rem;
-            padding: 1rem;
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-            color: rgba(229, 231, 242, 0.7);
-        }
-
-        .format-example code {
-            font-family: monospace;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0.2rem 0.4rem;
-            border-radius: 0.3rem;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
+        /* No modal styles needed */
 
         @media (max-width: 768px) {
             body {
@@ -664,15 +555,10 @@
                 <button class="btn-back" onclick="goBack()">
                     <i class="fas fa-arrow-left"></i> Back to Home
                 </button>
-                <h1 id="category-title">History</h1>
+                <h1 id="category-title">{{subject}}</h1>
                 <p class="subtitle">Explore flashcard sets and continue your ascent</p>
             </div>
-            <div class="header-actions">
-                <button class="btn" id="import-quizlet-btn">
-                    <i class="fas fa-file-import"></i> Import Set
-                </button>
             </div>
-        </div>
         
         <div class="carousel-container">
             {{ carousel | safe }}
@@ -704,54 +590,6 @@
         </footer>
     </main>
 
-    <!-- Import Modal -->
-    <div class="modal" id="import-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Import Quizlet Set</h2>
-                <button class="close-btn" id="close-modal">&times;</button>
-            </div>
-            
-            <form id="quizlet-import-form">
-                <div class="form-group">
-                    <label for="set-name">Set Name</label>
-                    <input type="text" id="set-name" class="form-control" placeholder="Enter a name for your flashcard set" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="set-category">Category</label>
-                    <select id="set-category" class="form-control" required>
-                        <option value="">Select a category</option>
-                        <option value="History">History</option>
-                        <option value="Science">Science</option>
-                        <option value="Math">Math</option>
-                        <option value="Language Arts">Language Arts</option>
-                        <option value="Foreign Language">Foreign Language</option>
-                        <option value="Fine Arts">Fine Arts</option>
-                        <option value="Misc">Miscellaneous</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="quizlet-text">Quizlet Set Text</label>
-                    <textarea id="quizlet-text" class="form-control" placeholder="Paste your Quizlet set here (one term per line, tab or | separated)" required></textarea>
-                    <div class="format-example">
-                        <p><strong>Format:</strong> One flashcard per line, with term and definition separated by a tab or | character</p>
-                        <p><strong>Example:</strong></p>
-                        <code>Spaced Repetition | A learning technique that increases intervals between reviews</code><br>
-                        <code>Algorithm	A step-by-step procedure for solving a problem</code><br>
-                        <code>API | Application Programming Interface</code>
-                    </div>
-                </div>
-                
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" id="cancel-import">Cancel</button>
-                    <button type="submit" class="btn" id="submit-import">Import Set</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script>
         function buildSetDescriptions(displayName, baseName) {
             const lowerBase = baseName.toLowerCase();
@@ -769,34 +607,40 @@
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
             const indicatorsContainer = document.getElementById('indicators');
-            const importQuizletBtn = document.getElementById('import-quizlet-btn');
-            const importModal = document.getElementById('import-modal');
-            const closeModal = document.getElementById('close-modal');
-            const cancelImport = document.getElementById('cancel-import');
-            const importForm = document.getElementById('quizlet-import-form');
-            
             let currentSlide = 0;
-            const totalSlides = 5; // One for each mountain set
             
             // Get category from URL or default to History
             const urlParams = new URLSearchParams(window.location.search);
             const category = urlParams.get('category') || 'History';
+            
+            // Get total number of slides from the actual elements
+            const totalSlides = carousel.querySelectorAll('.mountain-set').length;
 
             updateCategoryContent(category);
             
             // Create indicators and mark the first set as active
-            const setElements = carousel.querySelectorAll('.mountain-set');
-            setElements.forEach((setEl, index) => {
-                const indicator = document.createElement('div');
-                indicator.classList.add('indicator');
-                indicator.dataset.index = index;
-                if (index === 0) {
-                    indicator.classList.add('active');
-                    setEl.classList.add('active');
-                }
-                indicator.addEventListener('click', () => goToSlide(index));
-                indicatorsContainer.appendChild(indicator);
-            });
+            const setElements = document.querySelectorAll('.mountain-set');
+            if (setElements.length > 0) {
+                setElements.forEach((setEl, index) => {
+                    const indicator = document.createElement('div');
+                    indicator.classList.add('indicator');
+                    indicator.dataset.index = index;
+                    if (index === 0) {
+                        indicator.classList.add('active');
+                        setEl.classList.add('active');
+                    }
+                    indicator.addEventListener('click', () => goToSlide(index));
+                    indicatorsContainer.appendChild(indicator);
+                });
+            } else {
+                // If no sets exist, display a message
+                const noSetsMessage = document.createElement('div');
+                noSetsMessage.style.textAlign = 'center';
+                noSetsMessage.style.padding = '2rem';
+                noSetsMessage.style.color = '#fff';
+                noSetsMessage.innerHTML = `<h3>No flashcard sets found for this category.</h3>`;
+                document.querySelector('.carousel-container').appendChild(noSetsMessage);
+            }
 
             // Navigation functions
             function goToSlide(slideIndex) {
@@ -831,74 +675,6 @@
             prevBtn.addEventListener('click', prevSlide);
             nextBtn.addEventListener('click', nextSlide);
             
-            // Import Quizlet button
-            importQuizletBtn.addEventListener('click', function() {
-                importModal.style.display = 'flex';
-            });
-            
-            // Close modal
-            closeModal.addEventListener('click', function() {
-                importModal.style.display = 'none';
-                resetForm();
-            });
-
-            cancelImport.addEventListener('click', function() {
-                importModal.style.display = 'none';
-                resetForm();
-            });
-            
-            // Form submission
-            importForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const setName = document.getElementById('set-name').value;
-                const category = document.getElementById('set-category').value;
-                const quizletText = document.getElementById('quizlet-text').value;
-                
-                if (!setName || !category || !quizletText) {
-                    alert('Please fill in all fields');
-                    return;
-                }
-                
-                // Parse the Quizlet text
-                const lines = quizletText.split('\n');
-                const cards = [];
-                
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (line) {
-                        // Try both tab and pipe separators
-                        const parts = line.includes('\t') ? line.split('\t') : line.split('|');
-                        if (parts.length >= 2) {
-                            cards.push({
-                                term: parts[0].trim(),
-                                definition: parts[1].trim()
-                            });
-                        }
-                    }
-                }
-                
-                if (cards.length === 0) {
-                    alert('No valid flashcards found. Please use the correct format.');
-                    return;
-                }
-                
-                // In a real app, this would submit the data to a server
-                console.log('Importing set:', {
-                    name: setName,
-                    category: category,
-                    cards: cards
-                });
-                
-                alert(`Successfully imported ${cards.length} flashcards for "${setName}" in the ${category} category!`);
-                
-                importModal.style.display = 'none';
-                resetForm();
-            });
-            
-            function resetForm() {
-                importForm.reset();
-            }
             
             // Set current year in footer
             document.getElementById("year").textContent = new Date().getFullYear();
@@ -934,11 +710,9 @@
             window.activeCategoryDisplay = config.display || categoryKey;
         }
         
-        function startStudying(setNumber) {
+        function startStudying(setId) {
             const categoryDisplay = window.activeCategoryDisplay || document.getElementById('category-title').textContent;
-            const setTitle = document.getElementById(`set-title-${setNumber}`).textContent;
-            alert(`Starting to study: ${setTitle}\nCategory: ${categoryDisplay}\n\n(In a real application, this would navigate to the flashcards page for this set)`);
-            // window.location.href = `flashcards.html?category=${encodeURIComponent(category)}&set=${setNumber}`;
+            window.location.href = `/flashcards?category=${encodeURIComponent(categoryDisplay)}&set=${setId}`;
         }
         
         function goBack() {

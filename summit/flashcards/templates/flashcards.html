@@ -365,116 +365,7 @@
             color: rgba(229, 231, 242, 0.7);
         }
 
-        /* Import Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(12, 17, 103, 0.8);
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-            align-items: center;
-            justify-content: center;
-        }
 
-        .modal-content {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 1.75rem;
-            padding: 2.5rem;
-            width: 90%;
-            max-width: 700px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 24px 48px rgba(12, 17, 103, 0.35);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-header h2 {
-            color: #fff;
-            font-size: 1.8rem;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: rgba(229, 231, 242, 0.7);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .close-btn:hover {
-            color: #fff;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            color: #fff;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 1rem;
-            border-radius: 0.9rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1rem;
-            transition: border-color 0.2s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--lavender);
-        }
-
-        .form-control::placeholder {
-            color: rgba(229, 231, 242, 0.5);
-        }
-
-        textarea.form-control {
-            min-height: 200px;
-            resize: vertical;
-            font-family: monospace;
-        }
-
-        .format-example {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0.7rem;
-            padding: 1rem;
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-            color: rgba(229, 231, 242, 0.7);
-        }
-
-        .format-example code {
-            font-family: monospace;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0.2rem 0.4rem;
-            border-radius: 0.3rem;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
 
         footer {
             margin-top: 2rem;
@@ -562,9 +453,6 @@
                 <p class="subtitle">Master key concepts with spaced repetition</p>
             </div>
             <div class="header-actions">
-                <button class="btn" id="import-btn">
-                    <i class="fas fa-file-import"></i> Import Flashcards
-                </button>
             </div>
         </div>
         
@@ -642,18 +530,10 @@
         document.addEventListener('DOMContentLoaded', function() {
             const flashcard = document.getElementById('flashcard');
             const flipBtn = document.getElementById('flip-btn');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
             const wrongBtn = document.getElementById('wrong-btn');
             const hardBtn = document.getElementById('hard-btn');
             const mediumBtn = document.getElementById('medium-btn');
             const easyBtn = document.getElementById('easy-btn');
-            const importBtn = document.getElementById('import-btn');
-            const newSetBtn = document.getElementById('new-set-btn');
-            const importModal = document.getElementById('import-modal');
-            const closeModal = document.getElementById('close-modal');
-            const cancelImport = document.getElementById('cancel-import');
-            const importText = document.getElementById('import-text');
             
             // Initialize flashcards array
             let flashcards = [
@@ -794,97 +674,8 @@
                 }, 500);
             }
             
-            // New Set button (if present)
-            if (newSetBtn) {
-                newSetBtn.addEventListener('click', function() {
-                    // Reset to empty state
-                    flashcards = [];
-                    currentCardIndex = 0;
-                    totalCards = 0;
-                    updateFlashcardDisplay();
-
-                    document.querySelector('.set-details h3').textContent = "New Set";
-                    document.querySelector('.set-details p').textContent = "0 cards • 0% mastered";
-
-                    alert("Created a new empty flashcard set. Use the import feature to add cards.");
-                });
-            }
             
-            // Import modal functionality
-            if (importBtn) {
-                importBtn.addEventListener('click', function() {
-                    importModal.style.display = 'flex';
-                });
-            }
-            
-            if (closeModal) {
-                closeModal.addEventListener('click', function() {
-                    importModal.style.display = 'none';
-                    resetForm();
-                });
-            }
 
-            if (cancelImport) {
-                cancelImport.addEventListener('click', function() {
-                    importModal.style.display = 'none';
-                    resetForm();
-                });
-            }
-            
-            // Import form submit (AJAX fallback). Listen for the form submit and
-            // POST to the server endpoint. Server returns JSON {ok, imported, set_name}.
-            const importForm = document.getElementById('import-form');
-            if (importForm) {
-                importForm.addEventListener('submit', function(evt) {
-                    evt.preventDefault();
-
-                    const formData = new FormData(importForm);
-
-                    // Basic client-side validation
-                    const setName = formData.get('set_name')?.toString().trim();
-                    const flashcardText = formData.get('flashcard_text')?.toString().trim();
-                    if (!setName) {
-                        alert('Please enter a name for your flashcard set');
-                        return;
-                    }
-                    if (!flashcardText) {
-                        alert('Please enter some flashcard text');
-                        return;
-                    }
-
-                    fetch(importForm.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    }).then(r => r.json().then(payload => ({status: r.status, payload}))).then(({status, payload}) => {
-                        if (status >= 200 && status < 300 && payload.ok) {
-                            // Update UI with imported cards count
-                            const imported = payload.imported || 0;
-                            flashcards = [...flashcards]; // keep existing; server would persist in real app
-                            totalCards = flashcards.length + imported;
-                            currentCardIndex = 0;
-                            document.querySelector('.set-details h3').textContent = payload.set_name || setName;
-                            document.querySelector('.set-details p').textContent = `${totalCards} cards • 0% mastered`;
-                            updateFlashcardDisplay();
-                            alert(`Successfully imported ${imported} flashcards for set: "${payload.set_name || setName}"`);
-                            importModal.style.display = 'none';
-                            resetForm();
-                        } else {
-                            alert(payload.message || 'Import failed');
-                        }
-                    }).catch(err => {
-                        console.error('Import error', err);
-                        alert('An error occurred during import');
-                    });
-                });
-            }
-            
-            function resetForm() {
-                document.getElementById('set-name').value = '';
-                document.getElementById('flashcard-text').value = '';
-            }
             
             // Set current year in footer
             document.getElementById("year").textContent = new Date().getFullYear();
