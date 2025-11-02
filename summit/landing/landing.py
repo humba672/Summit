@@ -3,7 +3,13 @@ from ..flashcards.vocabModels import setList, terms, userTerms
 from .. import db
 from flask_login import login_required, current_user
 
-landing_bp = Blueprint("landing", __name__, template_folder="templates")
+landing_bp = Blueprint(
+    "landing",
+    __name__,
+    template_folder="templates",
+    static_folder="static",
+    static_url_path="/landing_static",
+)
 
 @landing_bp.route("/")
 def root():
