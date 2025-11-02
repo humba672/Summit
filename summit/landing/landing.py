@@ -13,7 +13,6 @@ landing_bp = Blueprint(
 
 @landing_bp.route("/")
 def root():
-    """Make the sign-in screen the default landing experience."""
     return redirect(url_for("auth.sign_in"))
 
 @landing_bp.route("/home")
@@ -32,7 +31,28 @@ def sign_in():
 @login_required
 @landing_bp.route("/learn")
 def home():
-    return render_template("home.html")
+    fa_count = db.session.query(terms).join(setList).filter(setList.category == 'Fine Arts', setList.author_id == current_user.id).count()
+    fa_sets = db.session.query(setList).filter(setList.category == 'Fine Arts', setList.author_id == current_user.id).count()
+    misc_count = db.session.query(terms).join(setList).filter(setList.category == 'Miscellaneous', setList.author_id == current_user.id).count()
+    misc_sets = db.session.query(setList).filter(setList.category == 'Miscellaneous', setList.author_id == current_user.id).count()
+    math_count = db.session.query(terms).join(setList).filter(setList.category == 'Mathematics', setList.author_id == current_user.id).count()
+    math_sets = db.session.query(setList).filter(setList.category == 'Mathematics', setList.author_id == current_user.id).count()
+    science_count = db.session.query(terms).join(setList).filter(setList.category == 'Science', setList.author_id == current_user.id).count()
+    science_sets = db.session.query(setList).filter(setList.category == 'Science', setList.author_id == current_user.id).count()
+    history_count = db.session.query(terms).join(setList).filter(setList.category == 'History', setList.author_id == current_user.id).count()
+    history_sets = db.session.query(setList).filter(setList.category == 'History', setList.author_id == current_user.id).count()
+    language_count = db.session.query(terms).join(setList).filter(setList.category == 'Language Arts', setList.author_id == current_user.id).count()
+    language_sets = db.session.query(setList).filter(setList.category == 'Language Arts', setList.author_id == current_user.id).count()
+    fl_count = db.session.query(terms).join(setList).filter(setList.category == 'Foreign Language', setList.author_id == current_user.id).count()
+    fl_sets = db.session.query(setList).filter(setList.category == 'Foreign Language', setList.author_id == current_user.id).count()
+    return render_template("home.html", 
+                           fa_count=fa_count, fa_sets=fa_sets,
+                           misc_count=misc_count, misc_sets=misc_sets,
+                           math_count=math_count, math_sets=math_sets,
+                           science_count=science_count, science_sets=science_sets,
+                           history_count=history_count, history_sets=history_sets,
+                           language_count=language_count, language_sets=language_sets,
+                           fl_count=fl_count, fl_sets=fl_sets)
 
 @login_required
 @landing_bp.route("/createSet", methods=["POST"])
