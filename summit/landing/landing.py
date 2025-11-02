@@ -25,7 +25,3 @@ def about():
 @landing_bp.route("/sign-in")
 def sign_in():
     return redirect(url_for("auth.sign_in"))
-
-@landing_bp.route("/learn")
-def home():
-    return render_template("home.html")

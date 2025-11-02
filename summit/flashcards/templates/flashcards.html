@@ -522,12 +522,15 @@
     <main>
         <div class="header">
             <div>
-                <h1>{{ name }}</h1>
+                <h1>Computer Science Terms</h1>
                 <p class="subtitle">Master key concepts with spaced repetition</p>
             </div>
             <div class="header-actions">
                 <button class="btn" id="import-btn">
                     <i class="fas fa-file-import"></i> Import Flashcards
+                </button>
+                <button class="btn" id="new-set-btn">
+                    <i class="fas fa-plus"></i> New Set
                 </button>
             </div>
         </div>
@@ -537,12 +540,12 @@
                 <i class="fas fa-laptop-code"></i>
             </div>
             <div class="set-details">
-                <h3>{{ name }}</h3>
+                <h3>Computer Science Fundamentals</h3>
                 <p>42 cards • 65% mastered</p>
             </div>
         </div>
         
-        <div class="flashcard-container" style="justify-content: center;">
+        <div class="flashcard-container">
             <div class="flashcard" id="flashcard">
                 <div class="flashcard-inner">
                     <div class="flashcard-front">
@@ -573,9 +576,15 @@
                 </button>
             </div>
             
-            <div class="navigation" style="justify-content: center;">
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prev-btn">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
                 <button class="btn" id="flip-btn">
                     <i class="fas fa-sync-alt"></i> Flip Card
+                </button>
+                <button class="btn btn-secondary" id="next-btn">
+                    Next <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
             
@@ -595,37 +604,35 @@
         </footer>
     </main>
 
-    <!-- Import Modal (now a POST form) -->
+    <!-- Import Modal -->
     <div class="modal" id="import-modal">
         <div class="modal-content">
-            <form id="import-form" method="post" action="/flashcards/import">
-                <div class="modal-header">
-                    <h2>Import Flashcards</h2>
-                    <button type="button" class="close-btn" id="close-modal">&times;</button>
+            <div class="modal-header">
+                <h2>Import Flashcards</h2>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="set-name">Set Name</label>
+                <input type="text" id="set-name" class="form-control" placeholder="Enter a name for your flashcard set">
+            </div>
+            
+            <div class="form-group">
+                <label for="flashcard-text">Flashcard Text</label>
+                <textarea id="flashcard-text" class="form-control" placeholder="Enter your flashcards in the format: front text | back text (one per line)"></textarea>
+                <div class="format-example">
+                    <p><strong>Format:</strong> One flashcard per line, with front and back separated by " | "</p>
+                    <p><strong>Example:</strong></p>
+                    <code>Spaced Repetition | A learning technique that increases intervals between reviews</code><br>
+                    <code>Algorithm | A step-by-step procedure for solving a problem</code><br>
+                    <code>API | Application Programming Interface</code>
                 </div>
-
-                <div class="form-group">
-                    <label for="set-name">Set Name</label>
-                    <input name="set_name" type="text" id="set-name" class="form-control" placeholder="Enter a name for your flashcard set">
-                </div>
-
-                <div class="form-group">
-                    <label for="flashcard-text">Flashcard Text</label>
-                    <textarea name="flashcard_text" id="flashcard-text" class="form-control" placeholder="Enter your flashcards in the format: front text | back text (one per line)"></textarea>
-                    <div class="format-example">
-                        <p><strong>Format:</strong> One flashcard per line, with front and back separated by " | "</p>
-                        <p><strong>Example:</strong></p>
-                        <code>Spaced Repetition | A learning technique that increases intervals between reviews</code><br>
-                        <code>Algorithm | A step-by-step procedure for solving a problem</code><br>
-                        <code>API | Application Programming Interface</code>
-                    </div>
-                </div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" id="cancel-import">Cancel</button>
-                    <button type="submit" class="btn" id="import-text">Import Flashcards</button>
-                </div>
-            </form>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancel-import">Cancel</button>
+                <button class="btn" id="import-text">Import Flashcards</button>
+            </div>
         </div>
     </div>
 
@@ -678,34 +685,28 @@
             }
             
             // Flip card functionality
-            if (flipBtn) {
-                flipBtn.addEventListener('click', function() {
-                    flashcard.classList.toggle('flipped');
-                });
-            }
+            flipBtn.addEventListener('click', function() {
+                flashcard.classList.toggle('flipped');
+            });
             
             flashcard.addEventListener('click', function() {
                 flashcard.classList.toggle('flipped');
             });
             
-            // Navigation between cards (guard elements)
-            if (prevBtn) {
-                prevBtn.addEventListener('click', function() {
-                    if (currentCardIndex > 0) {
-                        currentCardIndex--;
-                        updateFlashcardDisplay();
-                    }
-                });
-            }
-
-            if (nextBtn) {
-                nextBtn.addEventListener('click', function() {
-                    if (currentCardIndex < totalCards - 1) {
-                        currentCardIndex++;
-                        updateFlashcardDisplay();
-                    }
-                });
-            }
+            // Navigation between cards
+            prevBtn.addEventListener('click', function() {
+                if (currentCardIndex > 0) {
+                    currentCardIndex--;
+                    updateFlashcardDisplay();
+                }
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                if (currentCardIndex < totalCards - 1) {
+                    currentCardIndex++;
+                    updateFlashcardDisplay();
+                }
+            });
             
             // Difficulty buttons
             wrongBtn.addEventListener('click', function() {
@@ -760,92 +761,90 @@
                 }, 500);
             }
             
-            // New Set button (if present)
-            if (newSetBtn) {
-                newSetBtn.addEventListener('click', function() {
-                    // Reset to empty state
-                    flashcards = [];
-                    currentCardIndex = 0;
-                    totalCards = 0;
-                    updateFlashcardDisplay();
-
-                    document.querySelector('.set-details h3').textContent = "New Set";
-                    document.querySelector('.set-details p').textContent = "0 cards • 0% mastered";
-
-                    alert("Created a new empty flashcard set. Use the import feature to add cards.");
-                });
-            }
+            // New Set button
+            newSetBtn.addEventListener('click', function() {
+                // Reset to empty state
+                flashcards = [];
+                currentCardIndex = 0;
+                totalCards = 0;
+                updateFlashcardDisplay();
+                
+                document.querySelector('.set-details h3').textContent = "New Set";
+                document.querySelector('.set-details p').textContent = "0 cards • 0% mastered";
+                
+                alert("Created a new empty flashcard set. Use the import feature to add cards.");
+            });
             
             // Import modal functionality
-            if (importBtn) {
-                importBtn.addEventListener('click', function() {
-                    importModal.style.display = 'flex';
-                });
-            }
+            importBtn.addEventListener('click', function() {
+                importModal.style.display = 'flex';
+            });
             
-            if (closeModal) {
-                closeModal.addEventListener('click', function() {
-                    importModal.style.display = 'none';
-                    resetForm();
-                });
-            }
-
-            if (cancelImport) {
-                cancelImport.addEventListener('click', function() {
-                    importModal.style.display = 'none';
-                    resetForm();
-                });
-            }
+            closeModal.addEventListener('click', function() {
+                importModal.style.display = 'none';
+                resetForm();
+            });
             
-            // Import form submit (AJAX fallback). Listen for the form submit and
-            // POST to the server endpoint. Server returns JSON {ok, imported, set_name}.
-            const importForm = document.getElementById('import-form');
-            if (importForm) {
-                importForm.addEventListener('submit', function(evt) {
-                    evt.preventDefault();
-
-                    const formData = new FormData(importForm);
-
-                    // Basic client-side validation
-                    const setName = formData.get('set_name')?.toString().trim();
-                    const flashcardText = formData.get('flashcard_text')?.toString().trim();
-                    if (!setName) {
-                        alert('Please enter a name for your flashcard set');
-                        return;
-                    }
-                    if (!flashcardText) {
-                        alert('Please enter some flashcard text');
-                        return;
-                    }
-
-                    fetch(importForm.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    }).then(r => r.json().then(payload => ({status: r.status, payload}))).then(({status, payload}) => {
-                        if (status >= 200 && status < 300 && payload.ok) {
-                            // Update UI with imported cards count
-                            const imported = payload.imported || 0;
-                            flashcards = [...flashcards]; // keep existing; server would persist in real app
-                            totalCards = flashcards.length + imported;
-                            currentCardIndex = 0;
-                            document.querySelector('.set-details h3').textContent = payload.set_name || setName;
-                            document.querySelector('.set-details p').textContent = `${totalCards} cards • 0% mastered`;
-                            updateFlashcardDisplay();
-                            alert(`Successfully imported ${imported} flashcards for set: "${payload.set_name || setName}"`);
-                            importModal.style.display = 'none';
-                            resetForm();
+            cancelImport.addEventListener('click', function() {
+                importModal.style.display = 'none';
+                resetForm();
+            });
+            
+            // Import text functionality
+            importText.addEventListener('click', function() {
+                const setName = document.getElementById('set-name').value;
+                const flashcardText = document.getElementById('flashcard-text').value;
+                
+                if (!setName) {
+                    alert('Please enter a name for your flashcard set');
+                    return;
+                }
+                
+                if (!flashcardText) {
+                    alert('Please enter some flashcard text');
+                    return;
+                }
+                
+                // Parse the flashcard text
+                const lines = flashcardText.split('\n');
+                const newCards = [];
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line) {
+                        const parts = line.split('|');
+                        if (parts.length >= 2) {
+                            newCards.push({
+                                front: parts[0].trim(),
+                                back: parts[1].trim()
+                            });
                         } else {
-                            alert(payload.message || 'Import failed');
+                            console.warn(`Skipping invalid line: ${line}`);
                         }
-                    }).catch(err => {
-                        console.error('Import error', err);
-                        alert('An error occurred during import');
-                    });
-                });
-            }
+                    }
+                }
+                
+                if (newCards.length === 0) {
+                    alert('No valid flashcards found. Please use the format: front text | back text');
+                    return;
+                }
+                
+                // Add new cards to the current set
+                flashcards = [...flashcards, ...newCards];
+                totalCards = flashcards.length;
+                currentCardIndex = 0;
+                
+                // Update the UI
+                document.querySelector('.set-details h3').textContent = setName;
+                document.querySelector('.set-details p').textContent = `${totalCards} cards • 0% mastered`;
+                
+                updateFlashcardDisplay();
+                
+                alert(`Successfully imported ${newCards.length} flashcards for set: "${setName}"`);
+                
+                importModal.style.display = 'none';
+                resetForm();
+            });
             
             function resetForm() {
                 document.getElementById('set-name').value = '';
