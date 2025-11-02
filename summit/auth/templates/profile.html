@@ -139,7 +139,7 @@
 
     .progress-bar div {
       height: 100%;
-      width: 80%;
+      width: {{ current_user.altitude }}%;
       background: var(--altitude-fill);
       transition: width 0.4s ease;
     }
@@ -210,7 +210,7 @@
     <div class="profile-section">
       <h2>Altitude</h2>
       <p class="altitude">Altitude: {{ current_user.altitude }} ft</p>
-      <div class="progress-bar"><div style="width: 80%;"></div></div>
+      <div class="progress-bar"><div style="width: {{ current_user.altitude }}%;"></div></div>
     </div>
 
     <!-- Stats Section -->
