@@ -544,7 +544,7 @@
             </div>
             <div class="header-actions">
                 <button class="btn" id="import-quizlet-btn">
-                    <i class="fas fa-file-import"></i> Import Quizlet
+                    <i class="fas fa-file-import"></i> Import Set
                 </button>
             </div>
         </div>
@@ -560,15 +560,11 @@
                     <p class="mountain-description">Scale the heights of human civilization, from ancient empires to modern events. Each card is a step through time, building your understanding of how our world came to be.</p>
                     <div class="mountain-stats">
                         <div class="stat">
-                            <div class="stat-value">128</div>
+                            <div class="stat-value">{{ history_count }}</div>
                             <div class="stat-label">Cards</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-value">42%</div>
-                            <div class="stat-label">Mastered</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">7</div>
+                            <div class="stat-value">{{ history_sets }}</div>
                             <div class="stat-label">Sets</div>
                         </div>
                     </div>
@@ -586,15 +582,11 @@
                     <p class="mountain-description">Climb through the fundamental laws of nature, from quantum physics to biological systems. Each flashcard reveals another layer of our universe's mysteries.</p>
                     <div class="mountain-stats">
                         <div class="stat">
-                            <div class="stat-value">156</div>
+                            <div class="stat-value">{{ science_count }}</div>
                             <div class="stat-label">Cards</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-value">68%</div>
-                            <div class="stat-label">Mastered</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">9</div>
+                            <div class="stat-value">{{ science_sets }}</div>
                             <div class="stat-label">Sets</div>
                         </div>
                     </div>
@@ -612,15 +604,11 @@
                     <p class="mountain-description">Tackle the challenging terrain of numbers, formulas, and proofs. Each card solved brings you closer to the peak of mathematical understanding.</p>
                     <div class="mountain-stats">
                         <div class="stat">
-                            <div class="stat-value">98</div>
+                            <div class="stat-value">{{ math_count }}</div>
                             <div class="stat-label">Cards</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-value">35%</div>
-                            <div class="stat-label">Mastered</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">5</div>
+                            <div class="stat-value">{{ math_sets }}</div>
                             <div class="stat-label">Sets</div>
                         </div>
                     </div>
@@ -638,15 +626,11 @@
                     <p class="mountain-description">Navigate the literary landscape of grammar, vocabulary, and literary devices. Each card strengthens your command of the English language.</p>
                     <div class="mountain-stats">
                         <div class="stat">
-                            <div class="stat-value">112</div>
+                            <div class="stat-value">{{ ela_count }}</div>
                             <div class="stat-label">Cards</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-value">74%</div>
-                            <div class="stat-label">Mastered</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">6</div>
+                            <div class="stat-value">{{ ela_sets }}</div>
                             <div class="stat-label">Sets</div>
                         </div>
                     </div>
@@ -664,15 +648,11 @@
                     <p class="mountain-description">Cross borders of communication with vocabulary, grammar, and phrases from around the world. Each card opens doors to new cultures.</p>
                     <div class="mountain-stats">
                         <div class="stat">
-                            <div class="stat-value">203</div>
+                            <div class="stat-value">{{ fl_count }}</div>
                             <div class="stat-label">Cards</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-value">28%</div>
-                            <div class="stat-label">Mastered</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">12</div>
+                            <div class="stat-value">{{ fl_sets }}</div>
                             <div class="stat-label">Sets</div>
                         </div>
                     </div>
@@ -690,15 +670,11 @@
                     <p class="mountain-description">Explore the creative peaks of artistic movements, techniques, and masterpieces. Each card reveals another facet of human creativity.</p>
                     <div class="mountain-stats">
                         <div class="stat">
-                            <div class="stat-value">87</div>
+                            <div class="stat-value">{{ fa_count }}</div>
                             <div class="stat-label">Cards</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-value">51%</div>
-                            <div class="stat-label">Mastered</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">4</div>
+                            <div class="stat-value">{{ fa_sets }}</div>
                             <div class="stat-label">Sets</div>
                         </div>
                     </div>
@@ -716,15 +692,11 @@
                     <p class="mountain-description">Trek through diverse knowledge areas that don't fit in other ranges. From trivia to practical skills, there's always something new to discover.</p>
                     <div class="mountain-stats">
                         <div class="stat">
-                            <div class="stat-value">165</div>
+                            <div class="stat-value">{{ misc_count }}</div>
                             <div class="stat-label">Cards</div>
                         </div>
                         <div class="stat">
-                            <div class="stat-value">63%</div>
-                            <div class="stat-label">Mastered</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">8</div>
+                            <div class="stat-value">{{ misc_sets }}</div>
                             <div class="stat-label">Sets</div>
                         </div>
                     </div>
@@ -814,19 +786,18 @@
     <div class="modal" id="import-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Import Quizlet Set</h2>
+                <h2>Import Set</h2>
                 <button class="close-btn" id="close-modal">&times;</button>
             </div>
-            
-            <form id="quizlet-import-form">
+            <form id="quizlet-import-form" action="/createSet" method="POST">
                 <div class="form-group">
                     <label for="set-name">Set Name</label>
-                    <input type="text" id="set-name" class="form-control" placeholder="Enter a name for your flashcard set" required>
+                    <input type="text" name="set-name" id="set-name" class="form-control" placeholder="Enter a name for your flashcard set" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="set-category">Category</label>
-                    <select id="set-category" class="form-control" required>
+                    <select id="set-category" class="form-control" name="set-category" required>
                         <option value="">Select a category</option>
                         <option value="History">History</option>
                         <option value="Science">Science</option>
@@ -839,13 +810,13 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="quizlet-text">Quizlet Set Text</label>
-                    <textarea id="quizlet-text" class="form-control" placeholder="Paste your Quizlet set here (one term per line, tab or | separated)" required></textarea>
+                    <label for="set-text">Set Text</label>
+                    <textarea id="set-text" name="set-text" class="form-control" placeholder="Paste your Quizlet set here (one term per line, tab or | separated)" required></textarea>
                     <div class="format-example">
                         <p><strong>Format:</strong> One flashcard per line, with term and definition separated by a tab or | character</p>
                         <p><strong>Example:</strong></p>
                         <code>Spaced Repetition | A learning technique that increases intervals between reviews</code><br>
-                        <code>Algorithm	A step-by-step procedure for solving a problem</code><br>
+                        <code>Algorithm | A step-by-step procedure for solving a problem</code><br>
                         <code>API | Application Programming Interface</code>
                     </div>
                 </div>
@@ -911,14 +882,12 @@
             // Event listeners
             prevBtn?.addEventListener('click', prevSlide);
             nextBtn?.addEventListener('click', nextSlide);
-            
             // Create Set button
             if (createSetBtn) {
                 createSetBtn.addEventListener('click', function() {
                     alert("Create New Set functionality would open here");
                 });
             }
-            
             // Import Quizlet button
             importQuizletBtn?.addEventListener('click', function() {
                 importModal.style.display = 'flex';
@@ -929,57 +898,7 @@
                 importModal.style.display = 'none';
                 resetForm();
             });
-            
             cancelImport?.addEventListener('click', function() {
-                importModal.style.display = 'none';
-                resetForm();
-            });
-            
-            // Form submission
-            importForm?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const setName = document.getElementById('set-name').value;
-                const category = document.getElementById('set-category').value;
-                const quizletText = document.getElementById('quizlet-text').value;
-                
-                if (!setName || !category || !quizletText) {
-                    alert('Please fill in all fields');
-                    return;
-                }
-                
-                // Parse the Quizlet text
-                const lines = quizletText.split('\n');
-                const cards = [];
-                
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (line) {
-                        // Try both tab and pipe separators
-                        const parts = line.includes('\t') ? line.split('\t') : line.split('|');
-                        if (parts.length >= 2) {
-                            cards.push({
-                                term: parts[0].trim(),
-                                definition: parts[1].trim()
-                            });
-                        }
-                    }
-                }
-                
-                if (cards.length === 0) {
-                    alert('No valid flashcards found. Please use the correct format.');
-                    return;
-                }
-                
-                // In a real app, this would submit the data to a server
-                console.log('Importing set:', {
-                    name: setName,
-                    category: category,
-                    cards: cards
-                });
-                
-                alert(`Successfully imported ${cards.length} flashcards for "${setName}" in the ${category} category!`);
-                
                 importModal.style.display = 'none';
                 resetForm();
             });
