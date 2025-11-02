@@ -144,20 +144,49 @@
             margin-top: 1rem;
         }
 
-        /* Simple text box above flashcard */
+        /* Improved text box above flashcard */
         .info-box {
             width: 100%;
             max-width: 700px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 1rem;
-            padding: 1rem 1.5rem;
+            border-radius: 1.25rem;
+            padding: 1.25rem 1.75rem;
             backdrop-filter: blur(12px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             color: rgba(229, 231, 242, 0.9);
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            min-height: 70px;
+        }
+
+        .info-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+        }
+
+        .info-box-icon {
+            font-size: 1.3rem;
+            color: var(--lavender);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            background: rgba(155, 142, 206, 0.2);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-box-content {
+            flex: 1;
+            text-align: left;
+            line-height: 1.5;
         }
 
         .flashcard {
@@ -166,6 +195,7 @@
             height: 400px;
             perspective: 1500px;
             cursor: pointer;
+            margin-top: 0.5rem;
         }
 
         .flashcard-inner {
@@ -416,6 +446,19 @@
                 gap: 1rem;
                 align-items: center;
             }
+            
+            .info-box {
+                padding: 1rem 1.25rem;
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+                min-height: 60px;
+            }
+            
+            .info-box-icon {
+                min-width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
         }
 
         .loading {
@@ -463,9 +506,15 @@
         </div>
 
         <div class="flashcard-container" style="justify-content: center;">
-            <!-- Simple text box above flashcard -->
+            <!-- Improved text box above flashcard -->
             <div class="info-box" id="info-box">
-                <!-- Content will be populated by JavaScript -->
+                <div class="info-box-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="info-box-content" id="info-text">
+                    <!-- Default message that will be shown -->
+                    You will see the previous card in 5 minutes
+                </div>
             </div>
 
             <div class="flashcard" id="flashcard">
@@ -529,6 +578,7 @@
             const mediumBtn = document.getElementById('medium-btn');
             const easyBtn = document.getElementById('easy-btn');
             const infoBox = document.getElementById('info-box');
+            const infoText = document.getElementById('info-text');
 
             const cardFront = document.getElementById('card-front');
             const cardBack = document.getElementById('card-back');
@@ -574,10 +624,9 @@
 
                     // Update info box with any message from backend
                     if (data.message) {
-                        infoBox.textContent = data.message;
-                    } else {
-                        infoBox.textContent = ""; // Clear if no message
+                        infoText.textContent = data.message;
                     }
+                    // Don't hide the box - keep it visible with whatever content it has
 
                     // Update UI with new card
                     updateCardDisplay();
@@ -654,8 +703,8 @@
                 totalCards = demoCards.length;
                 currentCardIndex++;
                 
-                // For demo, you can set any message here or leave it empty
-                infoBox.textContent = "";
+                // For demo, keep the default message or update it
+                // infoText.textContent = "You will see the previous card in 5 minutes";
                 
                 updateCardDisplay();
             }
