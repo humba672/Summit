@@ -927,10 +927,11 @@
             setInterval(nextSlide, 8000);
         });
         
+        const selectionBaseUrl = "{{ url_for('flashcards.selection') }}";
+
         function navigateToFlashcards(category) {
-            // In a real app, this would navigate to the flashcards page with the selected category
-            alert(`Navigating to ${category} flashcards...\n\n(In a real application, this would load the flashcards page with the selected category)`);
-            // window.location.href = `flashcards.html?category=${encodeURIComponent(category)}`;
+            const params = new URLSearchParams({ category });
+            window.location.href = `${selectionBaseUrl}?${params.toString()}`;
         }
         
         function goToSlide(slideIndex) {

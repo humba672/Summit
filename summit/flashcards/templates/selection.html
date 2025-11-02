@@ -43,11 +43,21 @@
         }
 
         .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
             font-size: 1.6rem;
             font-weight: 700;
-            letter-spacing: 0.18rem;
+            letter-spacing: 0.12rem;
             color: #fff;
             text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .brand-logo {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
         }
 
         .nav-list {
@@ -207,6 +217,14 @@
             text-align: center;
             padding: 0;
             position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .mountain-set.active {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Mountain Container */
@@ -322,6 +340,22 @@
             transform: translateY(-50%) scale(1.1);
         }
 
+        .carousel-nav::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.45);
+            opacity: 0;
+            transform: scale(0.85);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .carousel-nav:hover::before {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
         .carousel-nav.prev {
             left: 10px;
         }
@@ -338,17 +372,17 @@
         }
 
         .indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
             background: rgba(255, 255, 255, 0.3);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.35s ease;
         }
 
         .indicator.active {
             background: #fff;
-            transform: scale(1.2);
+            transform: translateY(-4px) scale(1.15);
         }
 
         .progress-container {
@@ -609,14 +643,17 @@
 </head>
 <body>
     <aside class="sidebar">
-        <a class="brand" href="index.html">Summit</a>
+        <a class="brand" href="{{ url_for('landing.index') }}">
+            <img class="brand-logo" src="{{ url_for('landing.static', filename='mountainlogo.png') }}" alt="Summit logo">
+            <span>Summit</span>
+        </a>
         <nav>
             <ul class="nav-list">
-                <li class="nav-item"><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-                <li class="nav-item"><a href="flashcards.html"><i class="fas fa-layer-group"></i> Flashcards</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.index') }}"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.home') }}"><i class="fas fa-layer-group"></i> Learn</a></li>
                 <li class="nav-item"><a href="#"><i class="fas fa-user"></i> Profile</a></li>
                 <li class="nav-item"><a href="#"><i class="fas fa-users"></i> Friends</a></li>
-                <li class="nav-item"><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.about') }}"><i class="fas fa-info-circle"></i> About</a></li>
             </ul>
         </nav>
     </aside>
@@ -861,6 +898,65 @@
     </div>
 
     <script>
+        const CATEGORY_CONFIG = {
+            'History': {
+                display: 'History',
+                progressPercent: 54,
+                setBase: 'History',
+                setTitles: ['History Fundamentals', 'Advanced History', 'Historical Terminology', 'Historical Applications', 'History Review']
+            },
+            'Science': {
+                display: 'Science',
+                progressPercent: 68,
+                setBase: 'Science',
+                setTitles: ['Science Fundamentals', 'Advanced Science', 'Scientific Terminology', 'Scientific Applications', 'Science Review']
+            },
+            'Math': {
+                display: 'Math',
+                progressPercent: 35,
+                setBase: 'Math',
+                setTitles: ['Math Fundamentals', 'Advanced Math', 'Mathematical Terminology', 'Applied Math', 'Math Review']
+            },
+            'Language Arts': {
+                display: 'Language Arts',
+                progressPercent: 74,
+                setBase: 'Language',
+                setTitles: ['Language Fundamentals', 'Advanced Language', 'Literary Terminology', 'Interpretation Applications', 'Language Review'],
+                header: 'Language Fundamentals · Advanced Language'
+            },
+            'Foreign Language': {
+                display: 'Foreign Language',
+                progressPercent: 28,
+                setBase: 'Language',
+                setTitles: ['Conversation Basics', 'Advanced Conversation', 'Grammar Terminology', 'Cultural Applications', 'Immersion Review'],
+                header: 'Conversation Basics · Advanced Conversation'
+            },
+            'Fine Arts': {
+                display: 'Fine Arts',
+                progressPercent: 51,
+                setBase: 'Fine Arts',
+                setTitles: ['Fine Arts Fundamentals', 'Advanced Fine Arts', 'Art Terminology', 'Creative Applications', 'Fine Arts Review']
+            },
+            'Misc': {
+                display: 'Miscellaneous',
+                progressPercent: 63,
+                setBase: 'General Knowledge',
+                setTitles: ['General Knowledge Fundamentals', 'Advanced General Knowledge', 'Mixed Terminology', 'Practical Applications', 'General Review'],
+                header: 'General Knowledge Fundamentals · Advanced General Knowledge'
+            }
+        };
+
+        function buildSetDescriptions(displayName, baseName) {
+            const lowerBase = baseName.toLowerCase();
+            return [
+                `Master the essential ${lowerBase} concepts and foundational knowledge. This set covers the core principles that form the basis of more advanced topics.`,
+                `Challenge yourself with complex ${lowerBase} topics and advanced applications. This set builds upon foundational knowledge with deeper insights.`,
+                `Build your ${lowerBase} vocabulary with key terms and definitions. This set focuses on the language and terminology specific to this subject area.`,
+                `Explore real-world ${lowerBase} applications and practical implementations. This set connects theoretical knowledge with practical scenarios.`,
+                `Reinforce your ${lowerBase} knowledge with comprehensive review materials. This set combines concepts from all areas for thorough preparation.`
+            ];
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const carousel = document.getElementById('mountain-carousel');
             const prevBtn = document.getElementById('prev-btn');
@@ -878,20 +974,23 @@
             // Get category from URL or default to History
             const urlParams = new URLSearchParams(window.location.search);
             const category = urlParams.get('category') || 'History';
-            document.getElementById('category-title').textContent = category;
-            
-            // Update category-specific content
+
             updateCategoryContent(category);
             
-            // Create indicators
-            for (let i = 0; i < totalSlides; i++) {
+            // Create indicators and mark the first set as active
+            const setElements = carousel.querySelectorAll('.mountain-set');
+            setElements.forEach((setEl, index) => {
                 const indicator = document.createElement('div');
                 indicator.classList.add('indicator');
-                if (i === 0) indicator.classList.add('active');
-                indicator.addEventListener('click', () => goToSlide(i));
+                indicator.dataset.index = index;
+                if (index === 0) {
+                    indicator.classList.add('active');
+                    setEl.classList.add('active');
+                }
+                indicator.addEventListener('click', () => goToSlide(index));
                 indicatorsContainer.appendChild(indicator);
-            }
-            
+            });
+
             // Navigation functions
             function goToSlide(slideIndex) {
                 currentSlide = slideIndex;
@@ -904,6 +1003,10 @@
                     } else {
                         indicator.classList.remove('active');
                     }
+                });
+
+                document.querySelectorAll('.mountain-set').forEach((setEl, index) => {
+                    setEl.classList.toggle('active', index === currentSlide);
                 });
             }
             
@@ -997,59 +1100,42 @@
             setInterval(nextSlide, 8000);
         });
         
-        function updateCategoryContent(category) {
-            // Update category-specific content based on the category
+        function updateCategoryContent(categoryKey) {
+            const config = CATEGORY_CONFIG[categoryKey] || CATEGORY_CONFIG['History'];
             const categoryProgress = document.getElementById('category-progress');
             const progressBar = document.getElementById('category-progress-bar');
-            
-            // Set different progress values based on category
-            const progressValues = {
-                'History': { percent: '54%', width: '54%' },
-                'Science': { percent: '68%', width: '68%' },
-                'Math': { percent: '35%', width: '35%' },
-                'Language Arts': { percent: '74%', width: '74%' },
-                'Foreign Language': { percent: '28%', width: '28%' },
-                'Fine Arts': { percent: '51%', width: '51%' },
-                'Misc': { percent: '63%', width: '63%' }
-            };
-            
-            const progress = progressValues[category] || progressValues['History'];
-            categoryProgress.textContent = progress.percent + ' Complete';
-            progressBar.style.width = progress.width;
-            
-            // Update set titles and descriptions based on category
-            const setTitles = [
-                `${category} Fundamentals`,
-                `Advanced ${category}`,
-                `${category} Terminology`,
-                `${category} Applications`,
-                `${category} Review`
-            ];
-            
-            const setDescriptions = [
-                `Master the essential ${category.toLowerCase()} concepts and foundational knowledge. This set covers the core principles that form the basis of more advanced topics.`,
-                `Challenge yourself with complex ${category.toLowerCase()} topics and advanced applications. This set builds upon foundational knowledge with deeper insights.`,
-                `Build your ${category.toLowerCase()} vocabulary with key terms and definitions. This set focuses on the language and terminology specific to this subject area.`,
-                `Explore real-world ${category.toLowerCase()} applications and practical implementations. This set connects theoretical knowledge with practical scenarios.`,
-                `Reinforce your ${category.toLowerCase()} knowledge with comprehensive review materials. This set combines concepts from all areas for thorough preparation.`
-            ];
-            
-            // Update each set with category-specific content
+            const categoryTitle = document.getElementById('category-title');
+
+            const setTitles = config.setTitles || [];
+            const setDescriptions = config.setDescriptions || buildSetDescriptions(config.display || categoryKey, (config.setBase || config.display || categoryKey));
+
+            const headerText = config.header || `${setTitles[0]} · ${setTitles[1]}`;
+            categoryTitle.textContent = headerText;
+            document.title = `Summit | ${config.display || categoryKey}`;
+
+            const progressPercent = config.progressPercent ?? 54;
+            if (categoryProgress) categoryProgress.textContent = `${progressPercent}% Complete`;
+            if (progressBar) progressBar.style.width = `${progressPercent}%`;
+
             for (let i = 1; i <= 5; i++) {
-                document.getElementById(`set-title-${i}`).textContent = setTitles[i-1];
-                document.getElementById(`set-desc-${i}`).textContent = setDescriptions[i-1];
+                const titleEl = document.getElementById(`set-title-${i}`);
+                const descEl = document.getElementById(`set-desc-${i}`);
+                if (titleEl && setTitles[i - 1]) titleEl.textContent = setTitles[i - 1];
+                if (descEl && setDescriptions[i - 1]) descEl.textContent = setDescriptions[i - 1];
             }
+
+            window.activeCategoryDisplay = config.display || categoryKey;
         }
         
         function startStudying(setNumber) {
-            const category = document.getElementById('category-title').textContent;
+            const categoryDisplay = window.activeCategoryDisplay || document.getElementById('category-title').textContent;
             const setTitle = document.getElementById(`set-title-${setNumber}`).textContent;
-            alert(`Starting to study: ${setTitle}\n\n(In a real application, this would navigate to the flashcards page for this set)`);
+            alert(`Starting to study: ${setTitle}\nCategory: ${categoryDisplay}\n\n(In a real application, this would navigate to the flashcards page for this set)`);
             // window.location.href = `flashcards.html?category=${encodeURIComponent(category)}&set=${setNumber}`;
         }
         
         function goBack() {
-            window.location.href = 'index.html';
+            window.location.href = "{{ url_for('landing.home') }}";
         }
     </script>
 </body>
