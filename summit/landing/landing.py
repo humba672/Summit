@@ -54,7 +54,7 @@ def home():
                            math_count=math_count, math_sets=math_sets,
                            science_count=science_count, science_sets=science_sets,
                            history_count=history_count, history_sets=history_sets,
-                           language_count=language_count, language_sets=language_sets,
+                           ela_count=language_count, ela_sets=language_sets,
                            fl_count=fl_count, fl_sets=fl_sets)
 
 @login_required
@@ -68,14 +68,15 @@ def create_set():
         flash("Please provide flashcards data to create a set.", "error")
         return redirect(url_for("landing.home"))
 
-    set_instance = setList.query.filter_by(name=set_name, category=set_category, author=current_user.id).first()
+    set_instance = setList.query.filter_by(name=set_name, category=set_category, author_id=current_user.id).first()
 
     if set_instance:
         flash("Name already in use.", "error")
         return redirect(url_for("landing.home"))
 
-    set_instance = setList(name=set_name, category=set_category, author=current_user.id)
+    set_instance = setList(name=set_name, category=set_category, author_id=current_user.id)
     db.session.add(set_instance)
+    db.session.flush()
     
     flashcards = []
     for line in flashcards_data.splitlines():

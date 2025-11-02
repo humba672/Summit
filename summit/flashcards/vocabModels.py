@@ -13,7 +13,7 @@ class setList(db.Model):
 
 class terms(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    term = db.Column(db.String(150), unique=True, nullable=False)
+    term = db.Column(db.String(150), nullable=False)
     definition = db.Column(db.String(500), nullable=False)
     set_list_id = db.Column(db.Integer, db.ForeignKey('set_list.id'), nullable=False)
 
