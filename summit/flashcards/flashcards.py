@@ -171,6 +171,8 @@ def next_card():
     due_cards = review_due + new_due
 
     if not due_cards:
+        current_user.altitude += 10
+        db.session.commit()
         return {"message": "No more cards to review right now. Great job!"}, 204
 
     session["maxDue"] = max(session.get("maxDue", 0), len(due_cards))
