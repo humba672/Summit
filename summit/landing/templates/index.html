@@ -23,7 +23,7 @@
       margin: 0;
       font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
       color: var(--mist);
-      background: linear-gradient(135deg, var(--midnight) 0%, var(--lavender) 55%, var(--slate) 100%);
+      background: rgb(224, 240, 247);
       min-height: 100vh;
       display: flex;
     }
@@ -177,6 +177,25 @@
       color: rgba(232, 235, 247, 0.88);
     }
 
+    .summit-banner {
+      position: absolute;
+      top: clamp(1rem, 4vw, 2.5rem);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.75rem 1.8rem;
+      border-radius: 999px;
+      background: rgba(12, 17, 103, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #fff;
+      font-size: 0.95rem;
+      letter-spacing: 0.24rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: none;
+      z-index: 3;
+      box-shadow: 0 14px 28px rgba(12, 17, 103, 0.35);
+    }
+
     @media (max-width: 900px) {
       body { flex-direction: column; }
       .sidebar {
@@ -217,7 +236,8 @@
   </aside>
 
   <main>
-    <section class="mountain-stage" data-altitude="90">
+    <section class="mountain-stage" data-altitude="100">
+      <div class="summit-banner" id="summit-banner">You have reached the Summit</div>
       <div class="mountain-clip">
         <img
           class="mountain-img"
@@ -229,13 +249,13 @@
       </div>
 
       <div class="mountain-overlay"></div>
-
+∫∫
       <div class="altitude-track">
         <span class="altitude-label">Altitude</span>
         <div class="altitude-bar">
           <div class="altitude-fill"></div>
         </div>
-        <span class="altitude-percent-label" id="altitude-readout">90%</span>
+        <span class="altitude-percent-label" id="altitude-readout">100%</span>
       </div>
 
     </section>
@@ -246,6 +266,7 @@
       const stage   = document.querySelector('.mountain-stage');
       const fill    = document.querySelector('.altitude-fill');
       const readout = document.getElementById('altitude-readout');
+      const banner  = document.getElementById('summit-banner');
       const yearEl  = document.getElementById('year');
 
       if (yearEl) {
@@ -262,6 +283,9 @@
 
       // Image reveal: set CSS var read by .mountain-clip
       stage.style.setProperty('--reveal-pct', clamped);
+      if (banner) {
+        banner.style.display = clamped >= 100 ? 'inline-flex' : 'none';
+      }
     });
   </script>
 </body>
