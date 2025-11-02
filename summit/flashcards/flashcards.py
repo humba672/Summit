@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session, jsonify
 from flask_login import login_required, current_user
 from .. import db
 from ..flashcards.vocabModels import setList, terms, userTerms
 from fsrs import Scheduler, Card, Rating
+from datetime import datetime, timezone, timedelta
 
 scheduler = Scheduler()
 
@@ -48,15 +49,18 @@ def create_set(title, description, cards, ID, index=0):
 
 @flashcards_bp.route("/flashcards")
 def flashcards():
-    setid = request.args.get('set')
-    set_instance = setList.query.filter_by(id=setid, author_id=current_user.id).first()
+    session['maxDue'] = 0
+    session['new'] = []
+    session['setid'] = request.args.get('set')
+    session['maxNew'] = request.args.get('terms')
+    set_instance = setList.query.filter_by(id=session['setid'], author_id=current_user.id).first()
     if not set_instance:
         return "Set not found", 404
     total_cards = terms.query.filter_by(set_list_id=set_instance.id).count()
     return render_template("flashcards.html", 
                          name=set_instance.name,
                          total_cards=total_cards,
-                         set_id=setid)
+                         set_id=session['setid'])
 
 @flashcards_bp.route("/api/flashcards/<int:set_id>/card/<int:index>")
 @login_required
@@ -102,7 +106,69 @@ def selection():
 
     return render_template("selection.html", carousel=carousel, subject=cat)
 
+@login_required
+@flashcards_bp.route("/flashcards/next-card")
+def next_card():
+    user_terms = userTerms.query.filter_by(user_id=current_user.id).all()
+    due_cards = []
+    for ut in user_terms:
+        card = Card.from_json(ut.card_json)
+        if card.due.timestamp() < (datetime.now(timezone.utc).timestamp() + 300):
+            if card.step == 0:
+                if len(session['new']) < int(session['maxNew']):
+                    x = session['new']
+                    x.append(ut.term_id)
+                    session['new'] = x
+                    due_cards.append((ut, card))
+                else:
+                    continue
+            else:
+                due_cards.append((ut, card))
+    if not due_cards:
+        return {"message": "NA"}, 200
+
+    if len(due_cards) > session.get('maxDue', 0):
+        session['maxDue'] = len(due_cards)
+
+    ut, card = due_cards[0]
+    term_instance = terms.query.filter_by(id=ut.term_id).first()
+    if not term_instance:
+        return {"error": "Term not found"}, 404
+    return jsonify({
+        'card': {
+            'front': term_instance.term,
+            'back': term_instance.definition,
+            'setId': session['setid']
+        },
+        'totalCards': session['maxDue'],
+        'masteredCards': session['maxDue'] - len(due_cards),
+        'currentCardID': ut.term_id
+    })
+    
+
+@login_required
 @flashcards_bp.route("/flashcards/report", methods=["POST"])
 def report_progress():
     data = request.get_json()
-    term_id = data.get("cardIndex")
+    diff = data.get("difficulty")
+    cardID = data.get("currentCardID")
+    user_term = userTerms.query.filter_by(user_id=current_user.id, term_id=cardID).first() if cardID != 0 else userTerms.query.filter_by(user_id=current_user.id, term_id=1).first() 
+
+    Card_data = Card.from_json(user_term.card_json)
+    if diff == 0:
+        rating = Rating.Again
+    elif diff == 1:
+        rating = Rating.Hard
+    elif diff == 2:
+        rating = Rating.Good 
+    elif diff == 3:
+        rating = Rating.Easy
+    
+    Card_data, _ = scheduler.review_card(Card_data, rating)
+    time = Card_data.due - datetime.now(timezone.utc)
+    time = time.total_seconds()
+    print(time)
+    user_term.card_json = Card_data.to_json()
+    db.session.commit()
+
+    return {"time": time}

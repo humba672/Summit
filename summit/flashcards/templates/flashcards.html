@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,6 +54,12 @@
             color: #fff;
             text-decoration: none;
             text-transform: uppercase;
+        }
+
+        .brand-logo {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
         }
 
         .nav-list {
@@ -137,18 +144,49 @@
             margin-top: 1rem;
         }
 
-        .review-banner {
-            display: inline-flex;
+        /* Improved text box above flashcard */
+        .info-box {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.25rem 1.75rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.85rem 1.5rem;
-            border-radius: 999px;
-            background: rgba(12, 17, 103, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            color: #fff;
-            font-weight: 600;
-            letter-spacing: 0.05rem;
-            box-shadow: 0 16px 32px rgba(12, 17, 103, 0.35);
+            gap: 1rem;
+            color: rgba(229, 231, 242, 0.9);
+            font-size: 1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            min-height: 70px;
+        }
+
+        .info-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+        }
+
+        .info-box-icon {
+            font-size: 1.3rem;
+            color: var(--lavender);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            background: rgba(155, 142, 206, 0.2);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-box-content {
+            flex: 1;
+            text-align: left;
+            line-height: 1.5;
         }
 
         .flashcard {
@@ -157,6 +195,7 @@
             height: 400px;
             perspective: 1500px;
             cursor: pointer;
+            margin-top: 0.5rem;
         }
 
         .flashcard-inner {
@@ -172,7 +211,8 @@
             transform: rotateY(180deg);
         }
 
-        .flashcard-front, .flashcard-back {
+        .flashcard-front,
+        .flashcard-back {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -406,51 +446,77 @@
                 gap: 1rem;
                 align-items: center;
             }
+            
+            .info-box {
+                padding: 1rem 1.25rem;
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+                min-height: 60px;
+            }
+            
+            .info-box-icon {
+                min-width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
         }
-        
+
         .loading {
             opacity: 0.7;
             pointer-events: none;
         }
     </style>
 </head>
+
 <body>
     <aside class="sidebar">
-        <a class="brand" href="#">
+        <a class="brand" href="{{ url_for('landing.index') }}">
+            <img class="brand-logo" src="{{ url_for('landing.static', filename='mountainlogo.png') }}" alt="Summit logo">
             <span>Summit</span>
         </a>
         <nav>
             <ul class="nav-list">
-                <li class="nav-item"><a href="#"><i class="fas fa-home"></i> Home</a></li>
-                <li class="nav-item"><a href="#"><i class="fas fa-layer-group"></i> Flashcards</a></li>
-                <li class="nav-item"><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.index') }}"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.home') }}"><i class="fas fa-layer-group"></i> Learn</a></li>
+                <li class="nav-item"><a href="{{ url_for('auth.profile') }}"><i class="fas fa-user"></i> Profile</a></li>
                 <li class="nav-item"><a href="#"><i class="fas fa-users"></i> Friends</a></li>
-                <li class="nav-item"><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.about') }}"><i class="fas fa-info-circle"></i> About</a></li>
             </ul>
         </nav>
     </aside>
-    
+
     <main>
         <div class="header">
             <div>
-                <h1 id="set-name">Computer Science Fundamentals</h1>
+                <h1 id="set-name">{{name}}</h1>
                 <p class="subtitle">Master key concepts with spaced repetition</p>
             </div>
             <div class="header-actions">
             </div>
         </div>
-        
+
         <div class="set-info">
             <div class="set-icon">
                 <i class="fas fa-laptop-code"></i>
             </div>
             <div class="set-details">
-                <h3 id="set-name-display">Computer Science Fundamentals</h3>
+                <h3 id="set-name-display">{{name}}</h3>
                 <p id="set-stats">Loading...</p>
             </div>
         </div>
-        
+
         <div class="flashcard-container" style="justify-content: center;">
+            <!-- Improved text box above flashcard -->
+            <div class="info-box" id="info-box">
+                <div class="info-box-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="info-box-content" id="info-text">
+                    <!-- Default message that will be shown -->
+                    You will see the previous card in 5 minutes
+                </div>
+            </div>
+
             <div class="flashcard" id="flashcard">
                 <div class="flashcard-inner">
                     <div class="flashcard-front">
@@ -465,7 +531,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="difficulty-buttons">
                 <button class="btn difficulty-btn wrong" id="wrong-btn">
                     <i class="fas fa-times"></i> Wrong
@@ -480,13 +546,13 @@
                     <i class="fas fa-feather"></i> Easy
                 </button>
             </div>
-            
+
             <div class="navigation" style="justify-content: center;">
                 <button class="btn" id="flip-btn">
                     <i class="fas fa-sync-alt"></i> Flip Card
                 </button>
             </div>
-            
+
             <div class="progress-container">
                 <div class="progress-text">
                     <span>Mastery Progress</span>
@@ -497,198 +563,211 @@
                 </div>
             </div>
         </div>
-        
+
         <footer>
-            © <span id="year"></span> Summit - Into the Mountains, one card at a time
+            © <span id="year"></span> Summit - Into the Mountains
         </footer>
     </main>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const flashcard = document.getElementById('flashcard');
-        const flipBtn = document.getElementById('flip-btn');
-        const wrongBtn = document.getElementById('wrong-btn');
-        const hardBtn = document.getElementById('hard-btn');
-        const mediumBtn = document.getElementById('medium-btn');
-        const easyBtn = document.getElementById('easy-btn');
-        
-        const cardFront = document.getElementById('card-front');
-        const cardBack = document.getElementById('card-back');
-        const cardCounter = document.getElementById('card-counter');
-        const backCounter = document.getElementById('back-counter');
-        const progressText = document.getElementById('progress-text');
-        const progressFill = document.getElementById('progress-fill');
-        const setStats = document.getElementById('set-stats');
-        
-        let currentCard = null;
-        let totalCards = 0;
-        let masteredCards = 0;
-        let currentCardIndex = 0;
-        
-        // Initialize the flashcard display
-        async function loadNextCard() {
-            try {
-                // Show loading state
-                flashcard.classList.add('loading');
-                cardFront.textContent = "Loading next card...";
-                cardBack.textContent = "Loading next card...";
+        document.addEventListener('DOMContentLoaded', function () {
+            const flashcard = document.getElementById('flashcard');
+            const flipBtn = document.getElementById('flip-btn');
+            const wrongBtn = document.getElementById('wrong-btn');
+            const hardBtn = document.getElementById('hard-btn');
+            const mediumBtn = document.getElementById('medium-btn');
+            const easyBtn = document.getElementById('easy-btn');
+            const infoBox = document.getElementById('info-box');
+            const infoText = document.getElementById('info-text');
 
-                // Fetch next card from backend
-                const response = await fetch('/flashcards/next-card', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
+            const cardFront = document.getElementById('card-front');
+            const cardBack = document.getElementById('card-back');
+            const cardCounter = document.getElementById('card-counter');
+            const backCounter = document.getElementById('back-counter');
+            const progressText = document.getElementById('progress-text');
+            const progressFill = document.getElementById('progress-fill');
+            const setStats = document.getElementById('set-stats');
+
+            let currentCard = null;
+            let totalCards = 0;
+            let masteredCards = 0;
+            let currentCardIndex = 0;
+            let currentCardID = 0;
+
+            // Initialize the flashcard display
+            async function loadNextCard() {
+                try {
+                    // Show loading state
+                    flashcard.classList.add('loading');
+                    cardFront.textContent = "Loading next card...";
+                    cardBack.textContent = "Loading next card...";
+
+                    // Fetch next card from backend
+                    const response = await fetch('/flashcards/next-card', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    const data = await response.json();
+
+                    // Update with actual card data from backend
+                    currentCard = data.card;
+                    totalCards = data.totalCards || 0;
+                    masteredCards = data.masteredCards || 0;
+                    currentCardID = data.currentCardID || 0;
+
+                    // Update info box with any message from backend
+                    if (data.message) {
+                        infoText.textContent = data.message;
+                    }
+                    // Don't hide the box - keep it visible with whatever content it has
+
+                    // Update UI with new card
+                    updateCardDisplay();
+                    flashcard.classList.remove('loading');
+
+                } catch (error) {
+                    console.error('Error loading next card:', error);
+                    // Fallback to demo data if backend fails
+                    loadDemoCard();
+                    flashcard.classList.remove('loading');
                 }
-
-                const data = await response.json();
-                
-                // Update with actual card data from backend
-                currentCard = data.card;
-                totalCards = data.totalCards || 0;
-                masteredCards = data.masteredCards || 0;
-                currentCardIndex = data.currentIndex || 0;
-
-                // Update UI with new card
-                updateCardDisplay();
-                flashcard.classList.remove('loading');
-
-            } catch (error) {
-                console.error('Error loading next card:', error);
-                // Fallback to demo data if backend fails
-                loadDemoCard();
-                flashcard.classList.remove('loading');
             }
-        }
 
-        // Report difficulty to backend and get next card
-        async function reportDifficulty(difficulty) {
-            if (!currentCard) return;
+            // Report difficulty to backend and get next card
+            async function reportDifficulty(difficulty) {
+                if (!currentCard) return;
 
-            try {
-                // Show loading state
-                flashcard.classList.add('loading');
+                try {
+                    // Show loading state
+                    flashcard.classList.add('loading');
 
-                // Report to backend
-                const response = await fetch('/flashcards/report', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
+                    // Report to backend
+                    const response = await fetch('/flashcards/report', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            difficulty: difficulty,
+                            currentCardID: currentCardID
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+
+                    // Backend has processed the report, now get the next card
+                    await loadNextCard();
+
+                } catch (error) {
+                    console.error('Error reporting difficulty:', error);
+                    // Fallback: just load next card even if report fails
+                    await loadNextCard();
+                }
+            }
+
+            // Fallback function for demo purposes
+            function loadDemoCard() {
+                const demoCards = [
+                    { 
+                        id: 1, 
+                        front: "What is Spaced Repetition?", 
+                        back: "A learning technique that increases intervals of time between subsequent review of previously learned material",
+                        position: 1
                     },
-                    body: JSON.stringify({
-                        cardId: currentCard.id,
-                        difficulty: difficulty, // 0=Wrong, 1=Hard, 2=Medium, 3=Easy
-                        setId: currentCard.setId // If you have set context
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
+                    { 
+                        id: 2, 
+                        front: "What is an Algorithm?", 
+                        back: "A step-by-step procedure for solving a problem",
+                        position: 2
+                    },
+                    { 
+                        id: 3, 
+                        front: "What is an API?", 
+                        back: "Application Programming Interface - a set of rules that allows programs to talk to each other",
+                        position: 3
+                    }
+                ];
                 
-                // Backend has processed the report, now get the next card
-                await loadNextCard();
-
-            } catch (error) {
-                console.error('Error reporting difficulty:', error);
-                // Fallback: just load next card even if report fails
-                await loadNextCard();
+                currentCard = demoCards[currentCardIndex % demoCards.length];
+                totalCards = demoCards.length;
+                currentCardIndex++;
+                
+                // For demo, keep the default message or update it
+                // infoText.textContent = "You will see the previous card in 5 minutes";
+                
+                updateCardDisplay();
             }
-        }
 
-        // Fallback function for demo purposes
-        function loadDemoCard() {
-            const demoCards = [
-                { 
-                    id: 1, 
-                    front: "What is Spaced Repetition?", 
-                    back: "A learning technique that increases intervals of time between subsequent review of previously learned material",
-                    position: 1
-                },
-                { 
-                    id: 2, 
-                    front: "What is an Algorithm?", 
-                    back: "A step-by-step procedure for solving a problem",
-                    position: 2
-                },
-                { 
-                    id: 3, 
-                    front: "What is an API?", 
-                    back: "Application Programming Interface - a set of rules that allows programs to talk to each other",
-                    position: 3
-                }
-            ];
-            
-            currentCard = demoCards[currentCardIndex % demoCards.length];
-            totalCards = demoCards.length;
-            currentCardIndex++;
-            updateCardDisplay();
-        }
+            // Update the card display with current card data
+            function updateCardDisplay() {
+                if (!currentCard) return;
 
-        // Update the card display with current card data
-        function updateCardDisplay() {
-            if (!currentCard) return;
-            
-            cardFront.textContent = currentCard.front || currentCard.term || "No content";
-            cardBack.textContent = currentCard.back || currentCard.definition || "No content";
-            
-            const position = currentCard.position || currentCardIndex;
-            cardCounter.textContent = `Card ${position} of ${totalCards}`;
-            backCounter.textContent = `Card ${position} of ${totalCards}`;
-            
-            // Update progress
-            const progressPercent = Math.round((masteredCards / totalCards) * 100) || 
-                                Math.round((position / totalCards) * 100);
-            progressFill.style.width = `${progressPercent}%`;
-            progressText.textContent = `${masteredCards || position}/${totalCards} cards (${progressPercent}%)`;
-            
-            // Update set stats
-            setStats.textContent = `${totalCards} cards • ${progressPercent}% mastered`;
-            
-            // Reset card to front when changing cards
-            flashcard.classList.remove('flipped');
-        }
-        
-        // Flip card functionality
-        if (flipBtn) {
-            flipBtn.addEventListener('click', function() {
+                cardFront.textContent = currentCard.front || currentCard.term || "No content";
+                cardBack.textContent = currentCard.back || currentCard.definition || "No content";
+
+                const position = currentCard.position || currentCardIndex;
+                cardCounter.textContent = `Card ${position} of ${totalCards}`;
+                backCounter.textContent = `Card ${position} of ${totalCards}`;
+
+                // Update progress
+                const progressPercent = Math.round((masteredCards / totalCards) * 100) ||
+                    Math.round((position / totalCards) * 100);
+                progressFill.style.width = `${progressPercent}%`;
+                progressText.textContent = `${masteredCards || position}/${totalCards} cards (${progressPercent}%)`;
+
+                // Update set stats
+                setStats.textContent = `${totalCards} cards • ${progressPercent}% mastered`;
+
+                // Reset card to front when changing cards
+                flashcard.classList.remove('flipped');
+            }
+
+            // Flip card functionality
+            if (flipBtn) {
+                flipBtn.addEventListener('click', function () {
+                    flashcard.classList.toggle('flipped');
+                });
+            }
+
+            flashcard.addEventListener('click', function () {
                 flashcard.classList.toggle('flipped');
             });
-        }
-        
-        flashcard.addEventListener('click', function() {
-            flashcard.classList.toggle('flipped');
+
+            // Difficulty buttons
+            wrongBtn.addEventListener('click', function () {
+                reportDifficulty(0); // 0 = Wrong
+            });
+
+            hardBtn.addEventListener('click', function () {
+                reportDifficulty(1); // 1 = Hard
+            });
+
+            mediumBtn.addEventListener('click', function () {
+                reportDifficulty(2); // 2 = Medium
+            });
+
+            easyBtn.addEventListener('click', function () {
+                reportDifficulty(3); // 3 = Easy
+            });
+
+            // Set current year in footer
+            document.getElementById("year").textContent = new Date().getFullYear();
+
+            // Load the first card
+            loadNextCard();
         });
-    
-        // Difficulty buttons
-        wrongBtn.addEventListener('click', function() {
-            reportDifficulty(0); // 0 = Wrong
-        });
-        
-        hardBtn.addEventListener('click', function() {
-            reportDifficulty(1); // 1 = Hard
-        });
-        
-        mediumBtn.addEventListener('click', function() {
-            reportDifficulty(2); // 2 = Medium
-        });
-        
-        easyBtn.addEventListener('click', function() {
-            reportDifficulty(3); // 3 = Easy
-        });
-        
-        // Set current year in footer
-        document.getElementById("year").textContent = new Date().getFullYear();
-        
-        // Load the first card
-        loadNextCard();
-    });
-</script>
+    </script>
 </body>
+
 </html>
