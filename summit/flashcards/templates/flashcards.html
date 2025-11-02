@@ -150,6 +150,13 @@
             filter: grayscale(0.2);
         }
 
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
         .completion-modal {
             position: fixed;
             inset: 0;
@@ -159,7 +166,7 @@
             align-items: center;
             justify-content: center;
             padding: 2rem;
-            z-index: 1200;
+            z-index: 2000;
         }
 
         .completion-modal.active {
@@ -167,8 +174,8 @@
         }
 
         .completion-dialog {
-            background: rgba(255, 255, 255, 0.09);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.28);
             border-radius: 1.75rem;
             padding: clamp(2rem, 5vw, 3rem);
             width: min(420px, 100%);
@@ -186,7 +193,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: rgba(67, 192, 109, 0.18);
+            background: rgba(67, 192, 109, 0.2);
             border: 1px solid rgba(67, 192, 109, 0.45);
             color: rgba(67, 192, 109, 0.95);
             font-size: 2rem;
@@ -355,13 +362,6 @@
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 16px 28px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn:disabled {
-            opacity: 0.45;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
         }
 
         .btn-secondary {
@@ -650,15 +650,15 @@
         </div>
     </div>
 
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', () => {
             const flashcard = document.getElementById('flashcard');
             const flipBtn = document.getElementById('flip-btn');
             const wrongBtn = document.getElementById('wrong-btn');
             const hardBtn = document.getElementById('hard-btn');
             const mediumBtn = document.getElementById('medium-btn');
             const easyBtn = document.getElementById('easy-btn');
-            const infoBox = document.getElementById('info-box');
             const infoText = document.getElementById('info-text');
 
             const cardFront = document.getElementById('card-front');
@@ -668,72 +668,118 @@
             const progressText = document.getElementById('progress-text');
             const progressFill = document.getElementById('progress-fill');
             const setStats = document.getElementById('set-stats');
-            const completionModal = document.getElementById('completion-modal');
-            const completionClose = document.getElementById('completion-close');
-            const completionExplore = document.getElementById('completion-explore');
-            const completionTitle = document.getElementById('completion-title');
-            const completionNote = document.getElementById('completion-note');
+
+            const modal = document.getElementById('completion-modal');
+            const modalClose = document.getElementById('completion-close');
+            const modalExplore = document.getElementById('completion-explore');
+            const modalTitle = document.getElementById('completion-title');
+            const modalNote = document.getElementById('completion-note');
             const actionButtons = [wrongBtn, hardBtn, mediumBtn, easyBtn, flipBtn];
 
-            let currentCard = null;
-            let totalCards = 0;
-            let masteredCards = 0;
-            let currentCardIndex = 0;
-            let currentCardID = 0;
-            let cardsServed = 0;
-            let setCompleted = false;
+            const state = {
+                currentCard: null,
+                totalCards: 0,
+                masteredCards: 0,
+                currentCardIndex: 0,
+                cardsServed: 0,
+                currentCardID: 0,
+                completed: false,
+            };
 
-            completionClose?.addEventListener('click', () => {
-                completionModal?.classList.remove('active');
-            });
+            document.getElementById('year').textContent = new Date().getFullYear();
 
-            completionModal?.addEventListener('click', (event) => {
-                if (event.target === completionModal) {
-                    completionModal.classList.remove('active');
-                }
-            });
-
-            function showCompletionNotice() {
-                setCompleted = true;
-                actionButtons.forEach(btn => { if (btn) btn.disabled = true; });
-                flashcard.classList.add('completed');
-                infoText.textContent = "You have finished this set. Nice work!";
-                cardsServed = Math.max(cardsServed, totalCards);
-                cardFront.textContent = "Set complete";
-                cardBack.textContent = "Consider reviewing another summit.";
-                cardCounter.textContent = `Card ${cardsServed} of ${cardsServed}`;
-                backCounter.textContent = cardCounter.textContent;
-                progressFill.style.width = "100%";
-                progressText.textContent = `${cardsServed}/${cardsServed} cards (100%)`;
-                setStats.textContent = `${cardsServed} cards • 100% mastered`;
-
-                if (completionTitle) {
-                    completionTitle.textContent = "You have finished the set!";
-                }
-                if (completionNote) {
-                    const plural = cardsServed === 1 ? '' : 's';
-                    completionNote.textContent = `You mastered ${cardsServed} card${plural}. Take a breather before choosing your next climb.`;
-                }
-
-                completionModal?.classList.add('active');
+            function disableActions(disabled) {
+                actionButtons.forEach(btn => { if (btn) btn.disabled = disabled; });
             }
 
-async function loadNextCard() {
-                if (setCompleted) return;
+            modalClose?.addEventListener('click', () => modal?.classList.remove('active'));
+            modal?.addEventListener('click', (event) => {
+                if (event.target === modal) modal.classList.remove('active');
+            });
+
+            function secondsToPhrase(sec) {
+                if (sec == null) return null;
+                const total = Math.max(0, Math.round(sec));
+                if (total < 60) return `${total}s`;
+                const minutes = Math.round(total / 60);
+                if (minutes < 60) return `${minutes} min`;
+                const hours = Math.round(minutes / 60);
+                return `${hours} hr`;
+            }
+
+            function showCompletionOverlay() {
+                if (state.completed) return;
+
+                state.completed = true;
+                disableActions(true);
+                flashcard.classList.add('completed');
+
+                state.cardsServed = Math.max(state.cardsServed, state.totalCards, state.currentCardIndex + 1);
+                state.totalCards = Math.max(state.totalCards, state.cardsServed);
+                state.masteredCards = Math.max(state.masteredCards, state.cardsServed);
+
+                const label = `Card ${state.cardsServed} of ${state.cardsServed}`;
+                cardFront.textContent = 'Set complete';
+                cardBack.textContent = 'Consider reviewing another summit.';
+                cardCounter.textContent = label;
+                backCounter.textContent = label;
+                progressFill.style.width = '100%';
+                progressText.textContent = `${state.cardsServed}/${state.cardsServed} cards (100%)`;
+                setStats.textContent = `${state.cardsServed} cards • 100% mastered`;
+                infoText.textContent = 'You have finished this set. Nice work!';
+
+                if (modalTitle) modalTitle.textContent = 'You have finished the set!';
+                if (modalNote) modalNote.textContent = `You mastered ${state.cardsServed} card${state.cardsServed === 1 ? '' : 's'}. Take a breather before choosing your next climb.`;
+
+                modal?.classList.add('active');
+            }
+
+            function renderCard() {
+                if (!state.currentCard) return;
+
+                cardFront.textContent = state.currentCard.front || state.currentCard.term || 'No content';
+                cardBack.textContent = state.currentCard.back || state.currentCard.definition || 'No content';
+
+                const derivedPosition = Number.isFinite(state.currentCard.position)
+                    ? Math.max(0, state.currentCard.position)
+                    : Math.max(0, state.currentCardIndex);
+                state.currentCardIndex = derivedPosition;
+
+                state.cardsServed = Math.max(state.cardsServed || 1, state.currentCardIndex + 1);
+                const safeTotal = Math.max(1, state.totalCards || state.cardsServed);
+                if (state.totalCards < safeTotal) state.totalCards = safeTotal;
+
+                const displayIndex = Math.max(1, Math.min(state.cardsServed, safeTotal));
+                cardCounter.textContent = `Card ${displayIndex} of ${safeTotal}`;
+                backCounter.textContent = `Card ${displayIndex} of ${safeTotal}`;
+
+                const mastered = Number.isFinite(state.masteredCards) && state.masteredCards >= 0
+                    ? Math.min(state.masteredCards, safeTotal)
+                    : Math.max(0, displayIndex - 1);
+                const percent = Math.max(0, Math.min(100, Math.round((mastered / safeTotal) * 100)));
+
+                progressFill.style.width = `${percent}%`;
+                progressText.textContent = `${mastered}/${safeTotal} cards (${percent}%)`;
+                setStats.textContent = `${safeTotal} cards • ${percent}% mastered`;
+
+                flashcard.classList.remove('flipped');
+            }
+
+            async function loadNextCard() {
+                if (state.completed) return;
+
                 try {
                     flashcard.classList.add('loading');
-                    cardFront.textContent = "Loading next card...";
-                    cardBack.textContent = "Loading next card...";
+                    cardFront.textContent = 'Loading next card...';
+                    cardBack.textContent = 'Loading next card...';
 
                     const response = await fetch('/flashcards/next-card', {
                         method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        }
+                        headers: { 'Content-Type': 'application/json' },
                     });
 
                     if (response.status === 204) {
-                        showCompletionNotice();
+                        showCompletionOverlay();
                         return;
                     }
 
@@ -742,30 +788,29 @@ async function loadNextCard() {
                     }
 
                     const data = await response.json();
-
                     if (!data || !data.card) {
-                        showCompletionNotice();
+                        showCompletionOverlay();
                         return;
                     }
 
-                    const hadCard = !!currentCard;
-                    const prevIndex = currentCardIndex;
+                    const hadCard = !!state.currentCard;
+                    const prevIndex = state.currentCardIndex;
 
-                    currentCard = data.card;
+                    state.currentCard = data.card;
 
                     const receivedTotal = Number(data.totalCards);
                     if (Number.isFinite(receivedTotal) && receivedTotal > 0) {
-                        totalCards = receivedTotal;
-                    } else if (!totalCards) {
-                        totalCards = Math.max(1, prevIndex + (hadCard ? 2 : 1));
+                        state.totalCards = receivedTotal;
+                    } else if (!state.totalCards) {
+                        state.totalCards = Math.max(1, prevIndex + (hadCard ? 2 : 1));
                     }
 
                     const receivedMastered = Number(data.masteredCards);
                     if (Number.isFinite(receivedMastered) && receivedMastered >= 0) {
-                        masteredCards = receivedMastered;
+                        state.masteredCards = receivedMastered;
                     }
 
-                    currentCardID = data.currentCardID ?? currentCardID ?? 0;
+                    state.currentCardID = data.currentCardID ?? state.currentCardID ?? 0;
 
                     const positionCandidate = Number(
                         data.position ??
@@ -775,50 +820,46 @@ async function loadNextCard() {
                     );
 
                     if (Number.isFinite(positionCandidate)) {
-                        currentCardIndex = Math.max(0, positionCandidate);
-                        cardsServed = currentCardIndex + 1;
+                        state.currentCardIndex = Math.max(0, positionCandidate);
+                        state.cardsServed = state.currentCardIndex + 1;
                     } else if (!hadCard) {
-                        currentCardIndex = 0;
-                        cardsServed = 1;
+                        state.currentCardIndex = 0;
+                        state.cardsServed = Math.max(state.cardsServed, 1);
                     } else {
                         const projectedIndex = prevIndex + 1;
-                        const maxIndex = Math.max((totalCards || projectedIndex + 1) - 1, projectedIndex);
-                        currentCardIndex = Math.min(projectedIndex, maxIndex);
-                        cardsServed = Math.max(cardsServed + 1, currentCardIndex + 1);
+                        const maxIndex = Math.max((state.totalCards || projectedIndex + 1) - 1, projectedIndex);
+                        state.currentCardIndex = Math.min(projectedIndex, maxIndex);
+                        state.cardsServed = Math.max(state.cardsServed + 1, state.currentCardIndex + 1);
                     }
 
-                    if (totalCards <= currentCardIndex) {
-                        totalCards = currentCardIndex + 1;
+                    if (state.totalCards <= state.currentCardIndex) {
+                        state.totalCards = state.currentCardIndex + 1;
                     }
 
-                    cardsServed = Math.max(1, cardsServed || currentCardIndex + 1);
+                    state.cardsServed = Math.max(1, state.cardsServed || state.currentCardIndex + 1);
 
-                    updateCardDisplay();
+                    renderCard();
                 } catch (error) {
                     console.error('Error loading next card:', error);
-                    loadDemoCard();
+                    infoText.textContent = 'We hit a snag fetching new cards. Try again in a moment.';
                 } finally {
                     flashcard.classList.remove('loading');
                 }
             }
 
             async function reportDifficulty(difficulty) {
-                if (setCompleted || !currentCard) return;
+                if (state.completed || !state.currentCard) return;
 
                 try {
-                    // Show loading state
                     flashcard.classList.add('loading');
 
-                    // Report to backend
                     const response = await fetch('/flashcards/report', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            difficulty: difficulty,
-                            currentCardID: currentCardID
-                        })
+                            difficulty,
+                            currentCardID: state.currentCardID,
+                        }),
                     });
 
                     if (!response.ok) {
@@ -826,88 +867,38 @@ async function loadNextCard() {
                     }
 
                     const result = await response.json();
-                    await loadNextCard();
+                    if (typeof result.time === 'number') {
+                        const phrase = secondsToPhrase(result.time);
+                        if (phrase) infoText.textContent = `Next review scheduled in ${phrase}.`;
+                    }
 
+                    await loadNextCard();
                 } catch (error) {
                     console.error('Error reporting difficulty:', error);
                     await loadNextCard();
+                } finally {
+                    flashcard.classList.remove('loading');
                 }
             }
 
-    
-            function updateCardDisplay() {
-                if (!currentCard) return;
-
-                cardFront.textContent = currentCard.front || currentCard.term || "No content";
-                cardBack.textContent = currentCard.back || currentCard.definition || "No content";
-
-                const derivedPosition = Number.isFinite(currentCard.position)
-                    ? Math.max(0, currentCard.position)
-                    : Math.max(0, currentCardIndex);
-                currentCardIndex = derivedPosition;
-
-                cardsServed = Math.max(cardsServed || 1, currentCardIndex + 1);
-
-                const safeTotal = Math.max(1, totalCards || cardsServed);
-                if (totalCards < safeTotal) {
-                    totalCards = safeTotal;
-                }
-
-                const displayIndex = Math.max(1, Math.min(cardsServed, safeTotal));
-                cardCounter.textContent = `Card ${displayIndex} of ${safeTotal}`;
-                backCounter.textContent = `Card ${displayIndex} of ${safeTotal}`;
-
-                const percent = Math.max(
-                    0,
-                    Math.min(100,
-                        Number.isFinite(masteredCards) && masteredCards >= 0
-                            ? Math.round((masteredCards / safeTotal) * 100)
-                            : Math.round((displayIndex / safeTotal) * 100)
-                    )
-                );
-
-                progressFill.style.width = `${percent}%`;
-                progressText.textContent = `${Math.min(masteredCards || displayIndex - 1, safeTotal)}/${safeTotal} cards (${percent}%)`;
-                setStats.textContent = `${safeTotal} cards • ${percent}% mastered`;
-
-                flashcard.classList.remove('flipped');
-            }
-
-         
             if (flipBtn) {
-                flipBtn.addEventListener('click', function () {
-                    flashcard.classList.toggle('flipped');
-                });
+                flipBtn.addEventListener('click', () => flashcard.classList.toggle('flipped'));
             }
 
-            flashcard.addEventListener('click', function () {
-                flashcard.classList.toggle('flipped');
-            });
+            flashcard.addEventListener('click', () => flashcard.classList.toggle('flipped'));
+            wrongBtn.addEventListener('click', () => reportDifficulty(0));
+            hardBtn.addEventListener('click', () => reportDifficulty(1));
+            mediumBtn.addEventListener('click', () => reportDifficulty(2));
+            easyBtn.addEventListener('click', () => reportDifficulty(3));
 
-            
-            wrongBtn.addEventListener('click', function () {
-                reportDifficulty(0); // 0 = Wrong
-            });
-
-            hardBtn.addEventListener('click', function () {
-                reportDifficulty(1); // 1 = Hard
-            });
-
-            mediumBtn.addEventListener('click', function () {
-                reportDifficulty(2); // 2 = Medium
-            });
-
-            easyBtn.addEventListener('click', function () {
-                reportDifficulty(3); // 3 = Easy
-            });
-
-            document.getElementById("year").textContent = new Date().getFullYear();
-            function loadDemoCard() {
-                infoText.textContent = "We hit a snag fetching new cards. Try again in a moment.";
-            }
+            disableActions(false);
             loadNextCard();
         });
     </script>
+</body>
+
+</html>
+
 </body>
 
 </html>
