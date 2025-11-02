@@ -594,40 +594,7 @@
             © <span id="year"></span> Summit - Into the Mountains, one card at a time
         </footer>
     </main>
-
-    <!-- Import Modal (now a POST form) -->
-    <div class="modal" id="import-modal">
-        <div class="modal-content">
-            <form id="import-form" method="post" action="/flashcards/import">
-                <div class="modal-header">
-                    <h2>Import Flashcards</h2>
-                    <button type="button" class="close-btn" id="close-modal">&times;</button>
-                </div>
-
-                <div class="form-group">
-                    <label for="set-name">Set Name</label>
-                    <input name="set_name" type="text" id="set-name" class="form-control" placeholder="Enter a name for your flashcard set">
-                </div>
-
-                <div class="form-group">
-                    <label for="flashcard-text">Flashcard Text</label>
-                    <textarea name="flashcard_text" id="flashcard-text" class="form-control" placeholder="Enter your flashcards in the format: front text | back text (one per line)"></textarea>
-                    <div class="format-example">
-                        <p><strong>Format:</strong> One flashcard per line, with front and back separated by " | "</p>
-                        <p><strong>Example:</strong></p>
-                        <code>Spaced Repetition | A learning technique that increases intervals between reviews</code><br>
-                        <code>Algorithm | A step-by-step procedure for solving a problem</code><br>
-                        <code>API | Application Programming Interface</code>
-                    </div>
-                </div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" id="cancel-import">Cancel</button>
-                    <button type="submit" class="btn" id="import-text">Import Flashcards</button>
-                </div>
-            </form>
-        </div>
-    </div>
+</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
