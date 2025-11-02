@@ -466,7 +466,7 @@
             </div>
         </div>
         
-        <div class="flashcard-container" style="justify-content: center;" data-review-visible="1">
+        <div class="flashcard-container" style="justify-content: center;" data-review-visible="0">
             <div class="review-banner" id="review-banner">
                 <i class="fas fa-mountain"></i>
                 <span>This card will appear again in
@@ -483,22 +483,22 @@
                     <div class="flashcard-back">
                         <div class="card-content">A learning technique that increases intervals of time between subsequent review of previously learned material</div>
                         <div class="card-hint">Click to flip back</div>
-                        <div class="card-counter">Card 13 of 42</div>
+                        <div class="card-counter" id="back-counter">Card 13 of 42</div>
                     </div>
                 </div>
             </div>
             
             <div class="difficulty-buttons">
-                <button class="btn difficulty-btn wrong" id="wrong-btn">
+                <button class="btn difficulty-btn wrong" id="wrong-btn" onclick="report(0)">
                     <i class="fas fa-times"></i> Wrong
                 </button>
-                <button class="btn difficulty-btn hard" id="hard-btn">
+                <button class="btn difficulty-btn hard" id="hard-btn" onclick="report(1)">
                     <i class="fas fa-hard-hat"></i> Hard
                 </button>
-                <button class="btn difficulty-btn medium" id="medium-btn">
+                <button class="btn difficulty-btn medium" id="medium-btn" onclick="report(2)">
                     <i class="fas fa-balance-scale"></i> Medium
                 </button>
-                <button class="btn difficulty-btn easy" id="easy-btn">
+                <button class="btn difficulty-btn easy" id="easy-btn" onclick="report(3)">
                     <i class="fas fa-feather"></i> Easy
                 </button>
             </div>
@@ -555,6 +555,7 @@
                 frontContent.textContent = flashcards[currentCardIndex].front;
                 backContent.textContent = flashcards[currentCardIndex].back;
                 cardCounter.textContent = `Card ${currentCardIndex + 1} of ${totalCards}`;
+                document.getElementById('back-counter').textContent = `Card ${currentCardIndex + 1} of ${totalCards}`;
                 
                 // Update progress
                 const progressFill = document.querySelector('.progress-fill');
@@ -587,25 +588,7 @@
             flashcard.addEventListener('click', function() {
                 flashcard.classList.toggle('flipped');
             });
-            
-            // Navigation between cards (guard elements)
-            if (prevBtn) {
-                prevBtn.addEventListener('click', function() {
-                    if (currentCardIndex > 0) {
-                        currentCardIndex--;
-                        updateFlashcardDisplay();
-                    }
-                });
-            }
-
-            if (nextBtn) {
-                nextBtn.addEventListener('click', function() {
-                    if (currentCardIndex < totalCards - 1) {
-                        currentCardIndex++;
-                        updateFlashcardDisplay();
-                    }
-                });
-            }
+        
             
             // Difficulty buttons
             wrongBtn.addEventListener('click', function() {

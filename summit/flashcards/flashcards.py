@@ -2,6 +2,9 @@ from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from .. import db
 from ..flashcards.vocabModels import setList, terms, userTerms
+from fsrs import Scheduler, Card, Rating
+
+scheduler = Scheduler()
 
 flashcards_bp = Blueprint("flashcards", __name__, template_folder="templates")
 
@@ -78,3 +81,7 @@ def selection():
 
 
     return render_template("selection.html", carousel=carousel, subject=cat)
+
+@flashcards_bp.route("/flashcards/report", methods=["POST"])
+def report_progress():
+    pass
