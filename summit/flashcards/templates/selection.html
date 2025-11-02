@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit | History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --midnight: #0C1167;
+            --mist: #ACADBC;
+            --lavender: #9B8ECE;
+            --slate: #50514F;
+            --nav-bg: rgba(12, 17, 103, 0.82);
+            --nav-hover: rgba(155, 142, 206, 0.35);
+            --card-bg: rgba(12, 17, 103, 0.55);
+            --card-border: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
+            color: var(--mist);
+            background: linear-gradient(135deg, var(--midnight) 0%, var(--lavender) 55%, var(--slate) 100%);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: clamp(12rem, 18vw, 15rem);
+            background: var(--nav-bg);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            gap: 2rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 0.12rem;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .brand-logo {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+        }
+
+        .nav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 0.9rem;
+            color: rgba(242, 244, 252, 0.9);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.05rem;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .nav-item a::before {
+            content: "";
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 0.25rem;
+            background: rgba(172, 173, 188, 0.45);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .nav-item a:hover {
+            background: var(--nav-hover);
+            transform: translateX(3px);
+        }
+
+        .nav-item a:hover::before {
+            background: #fff;
+            transform: scale(1.2);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem clamp(0.25rem, 2vw, 1.5rem) clamp(0.25rem, 2vw, 1.5rem);
+            gap: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 0.5rem;
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 5vw, 3rem);
+            line-height: 1.05;
+            color: #fff;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(229, 231, 242, 0.8);
+            margin-top: 0.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 0;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1.7rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--midnight);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            border: none;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-back:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Mountain Sets Carousel */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            background: transparent;
+            border: none;
+            backdrop-filter: none;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .mountain-set {
+            min-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 0;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .mountain-set.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mountain Container */
+        .mountain-container {
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            position: relative;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        /* Simple Triangle Shape */
+        .mountain-shape {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Content positioning - moved further down */
+        .mountain-content {
+            position: relative;
+            text-align: center;
+            color: white;
+            z-index: 2;
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 0 2rem;
+            margin-top: 180px; /* Increased margin to move content further down */
+        }
+
+        .mountain-title {
+            font-size: 1.5rem; /* Reduced font size */
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            line-height: 1.2;
+        }
+
+        .mountain-description {
+            font-size: 0.9rem; /* Reduced font size */
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            max-width: 85%;
+        }
+
+        .mountain-stats {
+            display: flex;
+            gap: 1.5rem; /* Reduced gap */
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 1.3rem; /* Reduced font size */
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .stat-label {
+            font-size: 0.8rem; /* Reduced font size */
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--midnight);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .carousel-nav:hover {
+            background: #fff;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-nav::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.45);
+            opacity: 0;
+            transform: scale(0.85);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .carousel-nav:hover::before {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .carousel-nav.prev {
+            left: 10px;
+        }
+
+        .carousel-nav.next {
+            right: 10px;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .indicator {
+            width: 18px;
+            height: 18px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.35s ease;
+        }
+
+        .indicator.active {
+            background: #fff;
+            transform: translateY(-4px) scale(1.15);
+        }
+
+        .progress-container {
+            margin-top: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            width: 100%;
+            max-width: 1000px;
+            margin: 2rem auto 0;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: rgba(229, 231, 242, 0.9);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #9B8ECE, #ACADBC);
+            width: 65%;
+            border-radius: 4px;
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: rgba(225, 227, 236, 0.7);
+            text-align: center;
+        }
+
+        /* Import Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(12, 17, 103, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.75rem;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 600px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 24px 48px rgba(12, 17, 103, 0.35);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: #fff;
+            font-size: 1.8rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: rgba(229, 231, 242, 0.7);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.9rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--lavender);
+        }
+
+        .form-control::placeholder {
+            color: rgba(229, 231, 242, 0.5);
+        }
+
+        textarea.form-control {
+            min-height: 200px;
+            resize: vertical;
+            font-family: monospace;
+        }
+
+        .format-example {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.7rem;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: rgba(229, 231, 242, 0.7);
+        }
+
+        .format-example code {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.3rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+
+            .nav-list {
+                display: flex;
+                gap: 0.75rem;
+            }
+
+            .nav-item a {
+                padding: 0.65rem 0.9rem;
+            }
+
+            main {
+                padding: 0.5rem clamp(0.25rem, 3vw, 1.5rem) clamp(0.25rem, 3vw, 1.5rem);
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: row;
+                justify-content: flex-end;
+            }
+
+            .carousel-nav {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .carousel-nav.prev {
+                left: 5px;
+            }
+
+            .carousel-nav.next {
+                right: 5px;
+            }
+
+            .mountain-title {
+                font-size: 1.3rem;
+            }
+
+            .mountain-container {
+                height: 450px;
+                max-width: 90%;
+            }
+            
+            .mountain-shape {
+                padding: 2rem 1.5rem;
+            }
+            
+            .mountain-stats {
+                gap: 1.2rem;
+            }
+            
+            .mountain-description {
+                max-width: 95%;
+                font-size: 0.85rem;
+            }
+            
+            .mountain-content {
+                padding: 0 1rem;
+                margin-top: 150px; /* Adjusted for mobile */
+                max-width: 90%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mountain-container {
+                height: 400px;
+            }
+            
+            .mountain-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .mountain-title {
+                font-size: 1.2rem;
+            }
+            
+            .mountain-description {
+                font-size: 0.8rem;
+            }
+            
+            .mountain-content {
+                margin-top: 130px; /* Further adjusted for small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <a class="brand" href="{{ url_for('landing.index') }}">
+            <img class="brand-logo" src="{{ url_for('landing.static', filename='mountainlogo.png') }}" alt="Summit logo">
+            <span>Summit</span>
+        </a>
+        <nav>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="{{ url_for('landing.index') }}"><i class="fas fa-home"></i> Home</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.home') }}"><i class="fas fa-layer-group"></i> Learn</a></li>
+                <li class="nav-item"><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                <li class="nav-item"><a href="#"><i class="fas fa-users"></i> Friends</a></li>
+                <li class="nav-item"><a href="{{ url_for('landing.about') }}"><i class="fas fa-info-circle"></i> About</a></li>
+            </ul>
+        </nav>
+    </aside>
+    
+    <main>
+        <div class="header">
+            <div>
+                <button class="btn-back" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </button>
+                <h1 id="category-title">History</h1>
+                <p class="subtitle">Explore flashcard sets and continue your ascent</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn" id="import-quizlet-btn">
+                    <i class="fas fa-file-import"></i> Import Set
+                </button>
+            </div>
+        </div>
+        
+        <div class="carousel-container">
+            <div class="carousel" id="mountain-carousel">
+                <!-- Mountain Set 1 - Rocky Mountain -->
+                <div class="mountain-set">
+                    <div class="mountain-container">
+                        <div class="mountain-shape" style="background: linear-gradient(135deg, #5D4037, #8D6E63, #A1887F, #BCAAA4);">
+                            <div class="mountain-content">
+                                <h2 class="mountain-title" id="set-title-1">Fundamentals Peak</h2>
+                                <p class="mountain-description" id="set-desc-1">Master the essential concepts and foundational knowledge. This set covers the core principles that form the basis of more advanced topics.</p>
+                                <div class="mountain-stats">
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-cards-1">42</div>
+                                        <div class="stat-label">Cards</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-mastery-1">65%</div>
+                                        <div class="stat-label">Mastered</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-days-1">7</div>
+                                        <div class="stat-label">Days Active</div>
+                                    </div>
+                                </div>
+                                <button class="btn" onclick="startStudying(1)">
+                                    <i class="fas fa-hiking"></i> Begin Ascent
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mountain Set 2 - Stone Mountain -->
+                <div class="mountain-set">
+                    <div class="mountain-container">
+                        <div class="mountain-shape" style="background: linear-gradient(135deg, #546E7A, #78909C, #90A4AE, #B0BEC5);">
+                            <div class="mountain-content">
+                                <h2 class="mountain-title" id="set-title-2">Advanced Concepts Ridge</h2>
+                                <p class="mountain-description" id="set-desc-2">Challenge yourself with complex topics and advanced applications. This set builds upon foundational knowledge with deeper insights.</p>
+                                <div class="mountain-stats">
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-cards-2">38</div>
+                                        <div class="stat-label">Cards</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-mastery-2">42%</div>
+                                        <div class="stat-label">Mastered</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-days-2">12</div>
+                                        <div class="stat-label">Days Active</div>
+                                    </div>
+                                </div>
+                                <button class="btn" onclick="startStudying(2)">
+                                    <i class="fas fa-hiking"></i> Begin Ascent
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mountain Set 3 - Forest Mountain -->
+                <div class="mountain-set">
+                    <div class="mountain-container">
+                        <div class="mountain-shape" style="background: linear-gradient(135deg, #2E7D32, #4CAF50, #66BB6A, #81C784);">
+                            <div class="mountain-content">
+                                <h2 class="mountain-title" id="set-title-3">Terminology Pass</h2>
+                                <p class="mountain-description" id="set-desc-3">Build your vocabulary with key terms and definitions. This set focuses on the language and terminology specific to this subject area.</p>
+                                <div class="mountain-stats">
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-cards-3">56</div>
+                                        <div class="stat-label">Cards</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-mastery-3">78%</div>
+                                        <div class="stat-label">Mastered</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-days-3">5</div>
+                                        <div class="stat-label">Days Active</div>
+                                    </div>
+                                </div>
+                                <button class="btn" onclick="startStudying(3)">
+                                    <i class="fas fa-hiking"></i> Begin Ascent
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mountain Set 4 - Snowy Mountain -->
+                <div class="mountain-set">
+                    <div class="mountain-container">
+                        <div class="mountain-shape" style="background: linear-gradient(135deg, #37474F, #546E7A, #78909C, #90A4AE);">
+                            <div class="mountain-content">
+                                <h2 class="mountain-title" id="set-title-4">Applications Summit</h2>
+                                <p class="mountain-description" id="set-desc-4">Explore real-world applications and practical implementations. This set connects theoretical knowledge with practical scenarios.</p>
+                                <div class="mountain-stats">
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-cards-4">29</div>
+                                        <div class="stat-label">Cards</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-mastery-4">35%</div>
+                                        <div class="stat-label">Mastered</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-days-4">9</div>
+                                        <div class="stat-label">Days Active</div>
+                                    </div>
+                                </div>
+                                <button class="btn" onclick="startStudying(4)">
+                                    <i class="fas fa-hiking"></i> Begin Ascent
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mountain Set 5 - Sunset Mountain -->
+                <div class="mountain-set">
+                    <div class="mountain-container">
+                        <div class="mountain-shape" style="background: linear-gradient(135deg, #6A1B9A, #8E24AA, #AB47BC, #CE93D8);">
+                            <div class="mountain-content">
+                                <h2 class="mountain-title" id="set-title-5">Review Plateau</h2>
+                                <p class="mountain-description" id="set-desc-5">Reinforce your knowledge with comprehensive review materials. This set combines concepts from all areas for thorough preparation.</p>
+                                <div class="mountain-stats">
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-cards-5">67</div>
+                                        <div class="stat-label">Cards</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-mastery-5">58%</div>
+                                        <div class="stat-label">Mastered</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="set-days-5">14</div>
+                                        <div class="stat-label">Days Active</div>
+                                    </div>
+                                </div>
+                                <button class="btn" onclick="startStudying(5)">
+                                    <i class="fas fa-hiking"></i> Begin Ascent
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="carousel-nav prev" id="prev-btn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-nav next" id="next-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <div class="carousel-indicators" id="indicators">
+                <!-- Indicators will be generated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-text">
+                <span>Overall Category Progress</span>
+                <span id="category-progress">54% Complete</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="category-progress-bar"></div>
+            </div>
+        </div>
+        
+        <footer>
+            © <span id="year"></span> Summit - Into the Mountains, one card at a time
+        </footer>
+    </main>
+
+    <!-- Import Modal -->
+    <div class="modal" id="import-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Import Quizlet Set</h2>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            
+            <form id="quizlet-import-form">
+                <div class="form-group">
+                    <label for="set-name">Set Name</label>
+                    <input type="text" id="set-name" class="form-control" placeholder="Enter a name for your flashcard set" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="set-category">Category</label>
+                    <select id="set-category" class="form-control" required>
+                        <option value="">Select a category</option>
+                        <option value="History">History</option>
+                        <option value="Science">Science</option>
+                        <option value="Math">Math</option>
+                        <option value="Language Arts">Language Arts</option>
+                        <option value="Foreign Language">Foreign Language</option>
+                        <option value="Fine Arts">Fine Arts</option>
+                        <option value="Misc">Miscellaneous</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quizlet-text">Quizlet Set Text</label>
+                    <textarea id="quizlet-text" class="form-control" placeholder="Paste your Quizlet set here (one term per line, tab or | separated)" required></textarea>
+                    <div class="format-example">
+                        <p><strong>Format:</strong> One flashcard per line, with term and definition separated by a tab or | character</p>
+                        <p><strong>Example:</strong></p>
+                        <code>Spaced Repetition | A learning technique that increases intervals between reviews</code><br>
+                        <code>Algorithm	A step-by-step procedure for solving a problem</code><br>
+                        <code>API | Application Programming Interface</code>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-import">Cancel</button>
+                    <button type="submit" class="btn" id="submit-import">Import Set</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const CATEGORY_CONFIG = {
+            'History': {
+                display: 'History',
+                progressPercent: 54,
+                setBase: 'History',
+                setTitles: ['History Fundamentals', 'Advanced History', 'Historical Terminology', 'Historical Applications', 'History Review']
+            },
+            'Science': {
+                display: 'Science',
+                progressPercent: 68,
+                setBase: 'Science',
+                setTitles: ['Science Fundamentals', 'Advanced Science', 'Scientific Terminology', 'Scientific Applications', 'Science Review']
+            },
+            'Math': {
+                display: 'Math',
+                progressPercent: 35,
+                setBase: 'Math',
+                setTitles: ['Math Fundamentals', 'Advanced Math', 'Mathematical Terminology', 'Applied Math', 'Math Review']
+            },
+            'Language Arts': {
+                display: 'Language Arts',
+                progressPercent: 74,
+                setBase: 'Language',
+                setTitles: ['Language Fundamentals', 'Advanced Language', 'Literary Terminology', 'Interpretation Applications', 'Language Review'],
+                header: 'Language Fundamentals · Advanced Language'
+            },
+            'Foreign Language': {
+                display: 'Foreign Language',
+                progressPercent: 28,
+                setBase: 'Language',
+                setTitles: ['Conversation Basics', 'Advanced Conversation', 'Grammar Terminology', 'Cultural Applications', 'Immersion Review'],
+                header: 'Conversation Basics · Advanced Conversation'
+            },
+            'Fine Arts': {
+                display: 'Fine Arts',
+                progressPercent: 51,
+                setBase: 'Fine Arts',
+                setTitles: ['Fine Arts Fundamentals', 'Advanced Fine Arts', 'Art Terminology', 'Creative Applications', 'Fine Arts Review']
+            },
+            'Misc': {
+                display: 'Miscellaneous',
+                progressPercent: 63,
+                setBase: 'General Knowledge',
+                setTitles: ['General Knowledge Fundamentals', 'Advanced General Knowledge', 'Mixed Terminology', 'Practical Applications', 'General Review'],
+                header: 'General Knowledge Fundamentals · Advanced General Knowledge'
+            }
+        };
+
+        function buildSetDescriptions(displayName, baseName) {
+            const lowerBase = baseName.toLowerCase();
+            return [
+                `Master the essential ${lowerBase} concepts and foundational knowledge. This set covers the core principles that form the basis of more advanced topics.`,
+                `Challenge yourself with complex ${lowerBase} topics and advanced applications. This set builds upon foundational knowledge with deeper insights.`,
+                `Build your ${lowerBase} vocabulary with key terms and definitions. This set focuses on the language and terminology specific to this subject area.`,
+                `Explore real-world ${lowerBase} applications and practical implementations. This set connects theoretical knowledge with practical scenarios.`,
+                `Reinforce your ${lowerBase} knowledge with comprehensive review materials. This set combines concepts from all areas for thorough preparation.`
+            ];
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.getElementById('mountain-carousel');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const indicatorsContainer = document.getElementById('indicators');
+            const importQuizletBtn = document.getElementById('import-quizlet-btn');
+            const importModal = document.getElementById('import-modal');
+            const closeModal = document.getElementById('close-modal');
+            const cancelImport = document.getElementById('cancel-import');
+            const importForm = document.getElementById('quizlet-import-form');
+            
+            let currentSlide = 0;
+            const totalSlides = 5; // One for each mountain set
+            
+            // Get category from URL or default to History
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category') || 'History';
+
+            updateCategoryContent(category);
+            
+            // Create indicators and mark the first set as active
+            const setElements = carousel.querySelectorAll('.mountain-set');
+            setElements.forEach((setEl, index) => {
+                const indicator = document.createElement('div');
+                indicator.classList.add('indicator');
+                indicator.dataset.index = index;
+                if (index === 0) {
+                    indicator.classList.add('active');
+                    setEl.classList.add('active');
+                }
+                indicator.addEventListener('click', () => goToSlide(index));
+                indicatorsContainer.appendChild(indicator);
+            });
+
+            // Navigation functions
+            function goToSlide(slideIndex) {
+                currentSlide = slideIndex;
+                carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+                
+                // Update indicators
+                document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                    if (index === currentSlide) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+
+                document.querySelectorAll('.mountain-set').forEach((setEl, index) => {
+                    setEl.classList.toggle('active', index === currentSlide);
+                });
+            }
+            
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                goToSlide(currentSlide);
+            }
+            
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                goToSlide(currentSlide);
+            }
+            
+            // Event listeners
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+            
+            // Import Quizlet button
+            importQuizletBtn.addEventListener('click', function() {
+                importModal.style.display = 'flex';
+            });
+            
+            // Close modal
+            closeModal.addEventListener('click', function() {
+                importModal.style.display = 'none';
+                resetForm();
+            });
+
+            cancelImport.addEventListener('click', function() {
+                importModal.style.display = 'none';
+                resetForm();
+            });
+            
+            // Form submission
+            importForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const setName = document.getElementById('set-name').value;
+                const category = document.getElementById('set-category').value;
+                const quizletText = document.getElementById('quizlet-text').value;
+                
+                if (!setName || !category || !quizletText) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                // Parse the Quizlet text
+                const lines = quizletText.split('\n');
+                const cards = [];
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line) {
+                        // Try both tab and pipe separators
+                        const parts = line.includes('\t') ? line.split('\t') : line.split('|');
+                        if (parts.length >= 2) {
+                            cards.push({
+                                term: parts[0].trim(),
+                                definition: parts[1].trim()
+                            });
+                        }
+                    }
+                }
+                
+                if (cards.length === 0) {
+                    alert('No valid flashcards found. Please use the correct format.');
+                    return;
+                }
+                
+                // In a real app, this would submit the data to a server
+                console.log('Importing set:', {
+                    name: setName,
+                    category: category,
+                    cards: cards
+                });
+                
+                alert(`Successfully imported ${cards.length} flashcards for "${setName}" in the ${category} category!`);
+                
+                importModal.style.display = 'none';
+                resetForm();
+            });
+            
+            function resetForm() {
+                importForm.reset();
+            }
+            
+            // Set current year in footer
+            document.getElementById("year").textContent = new Date().getFullYear();
+            
+            // Auto-advance carousel (optional)
+            setInterval(nextSlide, 8000);
+        });
+        
+        function updateCategoryContent(categoryKey) {
+            const config = CATEGORY_CONFIG[categoryKey] || CATEGORY_CONFIG['History'];
+            const categoryProgress = document.getElementById('category-progress');
+            const progressBar = document.getElementById('category-progress-bar');
+            const categoryTitle = document.getElementById('category-title');
+
+            const setTitles = config.setTitles || [];
+            const setDescriptions = config.setDescriptions || buildSetDescriptions(config.display || categoryKey, (config.setBase || config.display || categoryKey));
+
+            const headerText = config.header || `${setTitles[0]} · ${setTitles[1]}`;
+            categoryTitle.textContent = headerText;
+            document.title = `Summit | ${config.display || categoryKey}`;
+
+            const progressPercent = config.progressPercent ?? 54;
+            if (categoryProgress) categoryProgress.textContent = `${progressPercent}% Complete`;
+            if (progressBar) progressBar.style.width = `${progressPercent}%`;
+
+            for (let i = 1; i <= 5; i++) {
+                const titleEl = document.getElementById(`set-title-${i}`);
+                const descEl = document.getElementById(`set-desc-${i}`);
+                if (titleEl && setTitles[i - 1]) titleEl.textContent = setTitles[i - 1];
+                if (descEl && setDescriptions[i - 1]) descEl.textContent = setDescriptions[i - 1];
+            }
+
+            window.activeCategoryDisplay = config.display || categoryKey;
+        }
+        
+        function startStudying(setNumber) {
+            const categoryDisplay = window.activeCategoryDisplay || document.getElementById('category-title').textContent;
+            const setTitle = document.getElementById(`set-title-${setNumber}`).textContent;
+            alert(`Starting to study: ${setTitle}\nCategory: ${categoryDisplay}\n\n(In a real application, this would navigate to the flashcards page for this set)`);
+            // window.location.href = `flashcards.html?category=${encodeURIComponent(category)}&set=${setNumber}`;
+        }
+        
+        function goBack() {
+            window.location.href = "{{ url_for('landing.home') }}";
+        }
+    </script>
+</body>
+</html>

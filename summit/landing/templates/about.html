@@ -37,11 +37,21 @@
     }
 
     .logo {
-      font-size: 1.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: var(--midnight);
       text-decoration: none;
-      letter-spacing: 0.14rem;
+      letter-spacing: 0.12rem;
+      text-transform: uppercase;
+    }
+
+    .logo img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
     }
 
     .nav-links {
@@ -152,41 +162,66 @@
     .story-image, .purpose-image {
       min-height: 240px;
       border-radius: 1.25rem;
-      background: linear-gradient(135deg, rgba(12, 17, 103, 0.12), rgba(67, 192, 109, 0.18));
-      border: 1px dashed rgba(12, 17, 103, 0.2);
-      color: rgba(1, 92, 54, 0.6);
+      background: linear-gradient(135deg, rgba(12, 17, 103, 0.08), rgba(67, 192, 109, 0.14));
+      border: 1px solid rgba(12, 17, 103, 0.12);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-style: italic;
-      text-align: center;
-      padding: 1.5rem;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .story-image img,
+    .purpose-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .team-container {
+      margin-top: 1.75rem;
+      display: grid;
+      gap: 1.1rem;
       grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
     }
 
     .team-member {
-      background: rgba(232, 235, 247, 0.35);
+      background: rgba(232, 235, 247, 0.45);
       border-radius: 1.25rem;
       padding: 1.5rem;
-      text-align: center;
-      border: 1px solid rgba(12, 17, 103, 0.08);
+      border: 1px solid rgba(12, 17, 103, 0.12);
+      box-shadow: 0 14px 30px rgba(12, 17, 103, 0.1);
+      display: grid;
+      gap: 0.6rem;
     }
 
-    .team-image {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      margin: 0 auto 1rem;
-      background: linear-gradient(135deg, rgba(12, 17, 103, 0.12), rgba(67, 192, 109, 0.15));
-      border: 1px dashed rgba(12, 17, 103, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(2, 84, 30, 0.6);
-      font-style: italic;
+    .team-member h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--midnight);
+    }
+
+    .team-member p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #026029;
+      line-height: 1.55;
+    }
+
+    .team-image--group {
+      margin-top: 1.5rem;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      border: 1px solid rgba(12, 17, 103, 0.12);
+      box-shadow: 0 20px 36px rgba(12, 17, 103, 0.12);
+    }
+
+    .team-image--group img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
     }
 
     .contact-info {
@@ -227,7 +262,10 @@
 </head>
 <body>
   <header class="top-bar">
-    <a class="logo" href="{{ url_for('auth.sign_in') }}">Summit</a>
+    <a class="logo" href="{{ url_for('landing.index') }}">
+      <img src="{{ url_for('landing.static', filename='mountainlogo.png') }}" alt="Summit logo">
+      <span>Summit</span>
+    </a>
     <nav class="nav-links">
       <a class="nav-link" href="{{ url_for('landing.index') }}">Home</a>
       <a class="nav-link" href="{{ url_for('auth.sign_in') }}">Sign in</a>
@@ -246,7 +284,9 @@
       <section class="card">
         <h2>Our Story</h2>
         <div class="story-layout">
-          <div class="story-image">Our climb started with a hunt for a better way to remember.</div>
+          <div class="story-image">
+            <img src="{{ url_for('landing.static', filename='mountainpicture1.jpeg') }}" alt="Summit team exploring the mountains" loading="lazy">
+          </div>
           <div class="story-text">
             <p>Summit began as a hackathon experiment fueled by late-night study sessions and a shared love for the mountains. We wanted a tool that felt encouraging, not overwhelming—one that found the balance between spaced repetition science and the joy of steady progress.</p>
             <p>What started as a sketch on a whiteboard turned into a living platform the moment we paired mindful pacing with visuals that keep the journey front and center. Summit keeps every ascent purposeful so each review leaves you a little higher than before.</p>
@@ -264,35 +304,38 @@
             </div>
             <p>Beyond memory science, we hope to inspire stewardship for our shared environments. Every deck completed is a reminder that even the steepest peaks yield to mindful steps.</p>
           </div>
-          <div class="purpose-image">Visuals of spacious trails and evergreen peaks belong here.</div>
+          <div class="purpose-image">
+            <img src="{{ url_for('landing.static', filename='evergreen.jpg') }}" alt="Evergreen forest trail" loading="lazy">
+          </div>
         </div>
       </section>
 
       <section class="card">
         <h2>Our Team</h2>
         <p>Summit is built by friends who met in classrooms, coding clubs, and trailheads.</p>
+        <div class="team-image--group">
+          <img src="{{ url_for('landing.static', filename='grouppicture.jpg') }}" alt="Summit team group photo" loading="lazy">
+        </div>
+        <p class="photo-credit">Photo: Katherine Chen</p>
         <div class="team-container">
-          <div class="team-member">
-            <div class="team-image">Rohan</div>
-            <h3>Rohan Srivastava</h3>
-            <p>Co-founder &amp; Developer</p>
-          </div>
-          <div class="team-member">
-            <div class="team-image">Aryan</div>
+            <div class="team-member">
             <h3>Aryan Singla</h3>
             <p>Co-founder &amp; Developer</p>
           </div>
           <div class="team-member">
-            <div class="team-image">Fangwu</div>
+            <h3>Rohan Srivastava</h3>
+            <p>Co-founder &amp; Developer</p>
+          </div>
+          <div class="team-member">
             <h3>Fangwu Yu</h3>
             <p>Co-founder &amp; Developer</p>
           </div>
           <div class="team-member">
-            <div class="team-image">Matthew</div>
             <h3>Matthew Ocampo</h3>
             <p>Co-founder &amp; Developer</p>
           </div>
         </div>
+       
       </section>
 
       <section class="card">

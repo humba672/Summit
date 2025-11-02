@@ -23,7 +23,7 @@
       margin: 0;
       font-family: "Segoe UI", Tahoma, Geneva, sans-serif;
       color: var(--mist);
-      background: linear-gradient(135deg, var(--midnight) 0%, var(--lavender) 55%, var(--slate) 100%);
+      background: rgb(224, 240, 247);
       min-height: 100vh;
       display: flex;
     }
@@ -41,11 +41,21 @@
     }
 
     .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
       font-size: 1.6rem;
       font-weight: 700;
-      letter-spacing: 0.18rem;
+      letter-spacing: 0.12rem;
       color: #fff;
       text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
     }
 
     .nav-list {
@@ -177,6 +187,25 @@
       color: rgba(232, 235, 247, 0.88);
     }
 
+    .summit-banner {
+      position: absolute;
+      top: clamp(1rem, 4vw, 2.5rem);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.75rem 1.8rem;
+      border-radius: 999px;
+      background: rgba(12, 17, 103, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #fff;
+      font-size: 0.95rem;
+      letter-spacing: 0.24rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: none;
+      z-index: 3;
+      box-shadow: 0 14px 28px rgba(12, 17, 103, 0.35);
+    }
+
     @media (max-width: 900px) {
       body { flex-direction: column; }
       .sidebar {
@@ -204,12 +233,15 @@
 </head>
 <body>
   <aside class="sidebar">
-    <a class="brand" href="{{ url_for('landing.home') }}">Learn</a>
+    <a class="brand" href="{{ url_for('landing.index') }}">
+      <img class="brand-logo" src="{{ url_for('landing.static', filename='mountainlogo.png') }}" alt="Summit logo" />
+      <span>Summit</span>
+    </a>
     <nav>
       <ul class="nav-list">
         <li class="nav-item"><a href="{{ url_for('landing.index') }}"><i class="fas fa-home"></i> Home</a></li>
         <li class="nav-item"><a href="{{ url_for('landing.home') }}"><i class="fas fa-layer-group"></i> Learn</a></li>
-        <li class="nav-item"><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+        <li class="nav-item"><a href="{{ url_for('auth.profile') }}"><i class="fas fa-user"></i> Profile</a></li>
         <li class="nav-item"><a href="#"><i class="fas fa-users"></i> Friends</a></li>
         <li class="nav-item"><a href="{{ url_for('landing.about') }}"><i class="fas fa-info-circle"></i> About</a></li>
       </ul>
@@ -217,7 +249,8 @@
   </aside>
 
   <main>
-    <section class="mountain-stage" data-altitude="90">
+    <section class="mountain-stage" data-altitude="100">
+      <div class="summit-banner" id="summit-banner">You have reached the Summit</div>
       <div class="mountain-clip">
         <img
           class="mountain-img"
@@ -229,13 +262,13 @@
       </div>
 
       <div class="mountain-overlay"></div>
-
+∫∫
       <div class="altitude-track">
         <span class="altitude-label">Altitude</span>
         <div class="altitude-bar">
           <div class="altitude-fill"></div>
         </div>
-        <span class="altitude-percent-label" id="altitude-readout">90%</span>
+        <span class="altitude-percent-label" id="altitude-readout">100%</span>
       </div>
 
     </section>
@@ -246,6 +279,7 @@
       const stage   = document.querySelector('.mountain-stage');
       const fill    = document.querySelector('.altitude-fill');
       const readout = document.getElementById('altitude-readout');
+      const banner  = document.getElementById('summit-banner');
       const yearEl  = document.getElementById('year');
 
       if (yearEl) {
@@ -262,6 +296,9 @@
 
       // Image reveal: set CSS var read by .mountain-clip
       stage.style.setProperty('--reveal-pct', clamped);
+      if (banner) {
+        banner.style.display = clamped >= 100 ? 'inline-flex' : 'none';
+      }
     });
   </script>
 </body>
