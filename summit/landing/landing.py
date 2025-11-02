@@ -32,8 +32,6 @@ def sign_in():
 @login_required
 @landing_bp.route("/learn")
 def home():
-    # ensure the 
-    math_count = terms.query.filter(terms.set_list.has(category="Math")).count()
     return render_template("home.html")
 
 @login_required
