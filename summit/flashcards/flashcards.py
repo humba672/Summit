@@ -49,6 +49,7 @@ def create_set(title, description, cards, ID, index=0):
 
 @flashcards_bp.route("/flashcards")
 def flashcards():
+    session['maxDue'] = 0
     session['new'] = []
     session['setid'] = request.args.get('set')
     session['maxNew'] = request.args.get('terms')
@@ -113,9 +114,21 @@ def next_card():
     for ut in user_terms:
         card = Card.from_json(ut.card_json)
         if card.due.timestamp() < (datetime.now(timezone.utc).timestamp() + 300):
-            due_cards.append((ut, card))
+            if card.step == 0:
+                if len(session['new']) < int(session['maxNew']):
+                    x = session['new']
+                    x.append(ut.term_id)
+                    session['new'] = x
+                    due_cards.append((ut, card))
+                else:
+                    continue
+            else:
+                due_cards.append((ut, card))
     if not due_cards:
-        return {"message": "No cards due"}, 200
+        return {"message": "NA"}, 200
+
+    if len(due_cards) > session.get('maxDue', 0):
+        session['maxDue'] = len(due_cards)
 
     ut, card = due_cards[0]
     term_instance = terms.query.filter_by(id=ut.term_id).first()
@@ -127,8 +140,8 @@ def next_card():
             'back': term_instance.definition,
             'setId': session['setid']
         },
-        'totalCards': len(user_terms),
-        'masteredCards': len(user_terms) - len(due_cards),
+        'totalCards': session['maxDue'],
+        'masteredCards': session['maxDue'] - len(due_cards),
         'currentCardID': ut.term_id
     })
     
